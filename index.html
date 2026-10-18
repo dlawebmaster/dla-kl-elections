@@ -215,6 +215,19 @@ textarea{min-height:110px;resize:vertical}
 #mdAlt{margin-right:auto}
 .vcode{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;letter-spacing:.08em;background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:0 5px;margin-left:4px}
 .lg-err{background:var(--soft);color:var(--warn);padding:8px 12px;border-radius:8px;font-weight:600;margin:0 0 12px}
+.k-lab{display:block;font-weight:700;margin:6px 0 6px}
+select.k-search{appearance:auto}
+.k-info{background:rgba(255,246,230,.08);border:1px solid rgba(255,246,230,.18);border-radius:10px;padding:12px 16px;margin:0 0 18px;font-size:.95rem}
+.k-info ul{margin:4px 0 8px;padding-left:18px}
+.k-info p{margin:0}
+.nom{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--line)}
+.nom:first-child{border-top:0}
+.nom .who{flex:1 1 220px}
+.nom .who b{display:block}
+.nom .meta{color:var(--muted);font-size:.88rem}
+.nom.done{opacity:.6}
+.check{display:flex;gap:10px;align-items:center;font-weight:600;cursor:pointer}
+.check input{width:20px;height:20px;accent-color:var(--crimson)}
 .dl-row .btn{display:inline-flex;align-items:center;gap:6px}
 .r-hint{font-size:.9rem;color:var(--muted);margin:10px 0 0;max-width:62ch}
 @media (max-width:560px){.grid2{grid-template-columns:1fr}.paper{padding:18px}}
@@ -282,8 +295,14 @@ textarea{min-height:110px;resize:vertical}
     </section>
 
     <section class="block">
+      <h2>Submitted nominations</h2>
+      <p class="lede">Members who added their own names from the page link. Check each one against the qualifications, then approve to put them on the ballot.</p>
+      <div id="noms"></div>
+    </section>
+
+    <section class="block">
       <h2>Voter roster</h2>
-      <p class="lede">Every member gets a personal voting code. To vote, they tap their name and enter their code, so each person votes once and nobody can vote for someone else.</p>
+      <p class="lede">Only needed if you turn on voting codes (Voting tab). Each member on the roster gets a personal code, so each person votes once and nobody can vote for someone else.</p>
       <div class="field">
         <label for="fRoster">Add members</label>
         <textarea id="fRoster" placeholder="One name per line"></textarea>
@@ -303,6 +322,11 @@ textarea{min-height:110px;resize:vertical}
       <h2 id="vHead">Voting is closed</h2>
       <p class="lede" id="vLede"></p>
       <div class="row" id="vActions"></div>
+    </section>
+    <section class="block">
+      <h2>Who can vote</h2>
+      <label class="check"><input type="checkbox" id="reqCodes"> Require voting codes</label>
+      <p class="lede" id="reqHint" style="margin-top:10px"></p>
     </section>
     <section class="block">
       <h2>Start over</h2>
@@ -478,33 +502,31 @@ textarea{min-height:110px;resize:vertical}
       </div></div>
 
       <div class="guide-step"><span class="guide-num">2</span><div>
-        <h3>Set up nominations</h3>
+        <h3>Set up the election</h3>
         <ul>
-          <li>Go to Nomination and type the election name, then tap “Save details.”</li>
-          <li>Review the qualifications for office before accepting any nominee.</li>
+          <li>Go to Nomination, type the election name, and tap “Save details.”</li>
           <li>Tap “Choose offices,” check the offices on this year’s ballot, and tap “Add selected offices.”</li>
-          <li>Under each office, add each nominee’s name and grade.</li>
-          <li>Paste the voter roster, one member per line, and tap “Add to roster.” Each member gets a voting code.</li>
-          <li>Tap “Print voting codes,” cut the slips apart, and give each member their own slip.</li>
+          <li>Review the qualifications for office.</li>
         </ul>
       </div></div>
 
       <div class="guide-step"><span class="guide-num">3</span><div>
-        <h3>Open voting</h3>
+        <h3>Open nominations</h3>
         <ul>
-          <li>Go to Voting and tap “Open voting.”</li>
-          <li>Tap “Open ballot screen.” This locks the advisor area so members can’t see results.</li>
-          <li>Members can vote on their own phones from the page link, or you can hand this device to each member.</li>
+          <li>On Voting, tap “Open nominations,” then share the page link with members.</li>
+          <li>Members running for office open the link, pick the office, and add their name and grade.</li>
+          <li>On Nomination, check each submission against the qualifications and tap “Approve” or “Decline.” Approved names go on the ballot.</li>
+          <li>You can also add nominees yourself under each office.</li>
         </ul>
       </div></div>
 
       <div class="guide-step"><span class="guide-num">4</span><div>
-        <h3>Members vote</h3>
+        <h3>Open voting</h3>
         <ul>
-          <li>Each member taps their name and enters their voting code. Names of members who already voted are greyed out.</li>
-          <li>They read each office’s responsibilities and choose one nominee, or “No vote.”</li>
-          <li>They review their choices and tap “Cast my ballot.”</li>
-          <li>They pass the device to the next member. The screen resets on its own.</li>
+          <li>On Voting, tap “Close nominations and open voting.”</li>
+          <li>Anyone with the link can vote, once per phone or computer. They choose one nominee per office, or “No vote,” then cast their ballot.</li>
+          <li>Voting in person on one device? Tap “Open shared ballot screen” so members can vote one after another.</li>
+          <li>Want a stricter election? Turn on “Require voting codes,” add the roster, and hand out the printed code slips.</li>
         </ul>
       </div></div>
 
@@ -576,7 +598,7 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt
 const uid = () => Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4);
 
 const DEFAULT_CONFIG = { title:"", pin:"", status:"setup", offices:[], roster:[] };
-const S = { config: {...DEFAULT_CONFIG}, ballots: [], checkins: {}, ready:false };
+const S = { config: {...DEFAULT_CONFIG}, ballots: [], checkins: {}, noms: [], ready:false };
 
 /* ---------- Storage: Supabase (DLA Kappa project) ---------- */
 const SB_URL = "https://knetoorjqnqdfcolbbdl.supabase.co";
@@ -599,27 +621,28 @@ const Store = {
   },
   async load(){
     try{
-      const st = await sb.from("kl_settings").select("title,status,offices").eq("id", 1).single();
+      const st = await sb.from("kl_settings").select("title,status,offices,require_codes").eq("id", 1).single();
       if(st.error) throw st.error;
-      let roster, ballots = [];
+      let roster, ballots = [], noms = [];
       if(admin && this.isAdvisor){
-        const [r, bl] = await Promise.all([
+        const [r, bl, nm] = await Promise.all([
           sb.from("kl_roster").select("id,name,code,voted").order("name"),
-          sb.from("kl_ballots").select("choices,cast_on")
+          sb.from("kl_ballots").select("choices,cast_on"),
+          sb.from("kl_nominations").select("id,office_id,name,grade,status,created_at").order("created_at")
         ]);
-        if(r.error) throw r.error; if(bl.error) throw bl.error;
-        roster = r.data; ballots = bl.data.map(x => ({ choices: x.choices, at: x.cast_on }));
+        if(r.error) throw r.error; if(bl.error) throw bl.error; if(nm.error) throw nm.error;
+        roster = r.data; ballots = bl.data.map(x => ({ choices: x.choices, at: x.cast_on })); noms = nm.data;
       } else {
         const r = await sb.rpc("kl_public_roster"); if(r.error) throw r.error;
         roster = r.data;
       }
-      const sig = JSON.stringify([st.data, roster, ballots, admin]);
+      const sig = JSON.stringify([st.data, roster, ballots, noms, admin]);
       setSync("Connected. Every device that opens this page shares the same election.");
       if(sig === this._sig) return;
       this._sig = sig;
       const checkins = {}; roster.forEach(m => { if(m.voted) checkins[m.id] = true; });
       S.config = Object.assign({...DEFAULT_CONFIG}, st.data, { roster: roster.map(m => ({ id: m.id, name: m.name, code: m.code })) });
-      S.checkins = checkins; S.ballots = ballots; S.ready = true;
+      S.checkins = checkins; S.ballots = ballots; S.noms = noms; S.ready = true;
       render();
     }catch(e){
       const detail = e && (e.message || e.code) ? " Details: " + (e.code ? e.code + " " : "") + (e.message || "") : "";
@@ -629,7 +652,7 @@ const Store = {
   },
   async saveConfig(patch){
     const row = {};
-    ["title","status","offices"].forEach(k => { if(k in patch) row[k] = JSON.parse(JSON.stringify(patch[k])); });
+    ["title","status","offices","require_codes"].forEach(k => { if(k in patch) row[k] = JSON.parse(JSON.stringify(patch[k])); });
     if(!Object.keys(row).length) return;
     Object.assign(S.config, row); render();
     row.updated_at = new Date().toISOString();
@@ -659,6 +682,21 @@ const Store = {
   },
   async cast(id, code, choices){
     const { data, error } = await sb.rpc("kl_cast_ballot", { p_member: id, p_code: code, p_choices: choices });
+    if(error) throw dbErr(error);
+    this._sig = null; this.load(); return data;
+  },
+  async submitNomination(office, name, grade){
+    const { data, error } = await sb.rpc("kl_submit_nomination", { p_office: office, p_name: name, p_grade: grade });
+    if(error) throw dbErr(error); return data;
+  },
+  async setNomination(id, status){
+    const { data, error } = await sb.from("kl_nominations").update({ status }).eq("id", id).select("id");
+    if(error) throw dbErr(error);
+    if(!data || !data.length) throw { code: "invalid_argument" };
+    this._sig = null; await this.load();
+  },
+  async castOpen(choices, token){
+    const { data, error } = await sb.rpc("kl_cast_open_ballot", { p_device: token, p_choices: choices });
     if(error) throw dbErr(error);
     this._sig = null; this.load(); return data;
   },
@@ -728,13 +766,13 @@ function render(){
   $("#mTitle").textContent = c.title || "Officer Election";
   $("#kTitle").textContent = c.title || "Kappa League Election";
   const st = $("#mStatus");
-  st.className = "pill" + (c.status === "open" ? " open" : "");
-  st.lastElementChild.textContent = c.status === "open" ? "Voting open" : c.status === "closed" ? "Voting closed" : "Setting up";
+  st.className = "pill" + (c.status === "open" || c.status === "nominating" ? " open" : "");
+  st.lastElementChild.textContent = c.status === "open" ? "Voting open" : c.status === "closed" ? "Voting closed" : c.status === "nominating" ? "Nominations open" : "Setting up";
   const nb = S.ballots.length;
   $("#mCount").textContent = nb + (nb === 1 ? " ballot cast" : " ballots cast") + (c.roster.length ? " of " + c.roster.length + " members" : "");
   if(document.activeElement !== $("#fTitle")) $("#fTitle").value = c.title || "";
   if(!render._kInit){ render._kInit = true; kioskReset(); }
-  renderOffices(); renderPicker(); renderRoster(); renderVote(); renderResults(); renderReport();
+  renderOffices(); renderPicker(); renderNoms(); renderRoster(); renderVote(); renderResults(); renderReport();
   if(!$("#kiosk").hidden) renderKiosk(false);
 }
 
@@ -781,20 +819,47 @@ function ballotReady(){
 }
 
 function renderVote(){
-  const c = S.config, a = $("#vActions");
+  const c = S.config, a = $("#vActions"), ready = ballotReady();
   if(c.status === "open"){
     $("#vHead").textContent = "Voting is open";
-    $("#vLede").textContent = "Open the ballot screen on this device and hand it to each member in turn. Members on other devices can open this page and do the same.";
-    a.innerHTML = '<button class="btn primary big" id="openKiosk">Open ballot screen</button><button class="btn" id="closeVoting">Close voting</button>';
+    $("#vLede").textContent = c.require_codes
+      ? "Members vote from the page link with their name and voting code. To pass this device around instead, open the shared ballot screen."
+      : "Anyone with the page link can vote, once per device. To let members vote one after another on this device, open the shared ballot screen and stay nearby.";
+    a.innerHTML = '<button class="btn primary big" id="openKiosk">Open shared ballot screen</button><button class="btn" id="closeVoting">Close voting</button>';
   } else if(c.status === "closed"){
     $("#vHead").textContent = "Voting is closed";
     $("#vLede").textContent = "Results are final unless you reopen voting.";
     a.innerHTML = '<button class="btn" id="openVoting">Reopen voting</button>';
+  } else if(c.status === "nominating"){
+    const pend = (S.noms || []).filter(n => n.status === "pending").length;
+    $("#vHead").textContent = "Nominations are open";
+    $("#vLede").textContent = "Members running for office add their names from the page link. Review them on the Nomination tab" + (pend ? ` (${pend} waiting)` : "") + ". When you’re ready, close nominations and open voting.";
+    a.innerHTML = `<button class="btn primary big" id="openVoting" ${ready ? "" : "disabled"}>Close nominations and open voting</button><button class="btn" id="closeNoms">Close nominations</button>`;
   } else {
     $("#vHead").textContent = "Ready to start?";
-    $("#vLede").textContent = ballotReady() ? "Opening voting lets members start casting ballots." : "Add at least one office with candidates first.";
-    a.innerHTML = `<button class="btn primary big" id="openVoting" ${ballotReady() ? "" : "disabled"}>Open voting</button>`;
+    $("#vLede").textContent = !c.offices.length ? "Choose offices on the Nomination tab first."
+      : "Open nominations so members can add their names, or open voting if your nominees are already on the ballot.";
+    a.innerHTML = `<button class="btn primary big" id="openNoms" ${c.offices.length ? "" : "disabled"}>Open nominations</button><button class="btn" id="openVoting" ${ready ? "" : "disabled"}>Open voting</button>`;
   }
+  const rc = $("#reqCodes"); rc.checked = !!c.require_codes;
+  $("#reqHint").textContent = c.require_codes
+    ? "Only members on the roster can vote, once each, using the code on their printed slip."
+    : "Anyone with the page link can vote, once per phone or computer. Someone could vote again from a different device or a private browser window. For a stricter election, turn on voting codes.";
+}
+
+function renderNoms(){
+  const wrap = $("#noms"), list = S.noms || [];
+  if(!list.length){ wrap.innerHTML = '<p class="empty">No nominations yet. Open nominations on the Voting tab and share the page link.</p>'; return; }
+  const office = id => (S.config.offices.find(o => o.id === id) || {}).name || "Removed office";
+  const row = n => `<div class="nom ${n.status !== "pending" ? "done" : ""}" data-nid="${n.id}">
+      <span class="who"><b>${esc(n.name)}</b><span class="meta">${esc(office(n.office_id))}${n.grade ? ", " + esc(n.grade) : ""}</span></span>
+      ${n.status === "pending"
+        ? '<button class="btn primary n-ok">Approve</button><button class="btn n-no">Decline</button>'
+        : `<span class="meta">${n.status === "approved" ? "Approved" : "Declined"}</span>`}
+    </div>`;
+  const pending = list.filter(n => n.status === "pending"), done = list.filter(n => n.status !== "pending");
+  wrap.innerHTML = (pending.length ? pending.map(row).join("") : '<p class="empty">Nothing waiting for review.</p>')
+    + (done.length ? `<h3 style="margin:18px 0 4px;font-size:.95rem">Reviewed</h3>` + done.map(row).join("") : "");
 }
 
 function renderResults(){
@@ -826,9 +891,16 @@ function renderResults(){
 }
 
 /* ---------- Kiosk ---------- */
-const K = { step:"who", member:null, code:"", picks:{}, q:"", err:"" };
-function kioskReset(){ K.step = "who"; K.member = null; K.code = ""; K.picks = {}; K.q = ""; K.err = ""; }
-function openKiosk(){
+const K = { step:"who", member:null, code:"", picks:{}, q:"", err:"", supervised:false, nom:{ office:"", name:"", grade:"" } };
+function kioskReset(){ K.step = S.config.require_codes ? "who" : "ballot"; K.member = null; K.code = ""; K.picks = {}; K.q = ""; K.err = ""; }
+function deviceToken(){
+  const fresh = () => (window.crypto && crypto.randomUUID ? crypto.randomUUID() : uid() + uid() + uid()) + "-" + uid();
+  if(K.supervised) return fresh();
+  try{ let t = localStorage.getItem("kl-device"); if(!t){ t = fresh(); localStorage.setItem("kl-device", t); } return t; }
+  catch(_){ return fresh(); }
+}
+function openKiosk(supervised){
+  K.supervised = !!supervised;
   if(admin){ sb.auth.signOut().catch(() => {}); Store.isAdvisor = false; S.ballots = []; S.config.roster = S.config.roster.map(m => ({ id: m.id, name: m.name })); Store._sig = null; Store.load(); }
   admin = false; $("#login").hidden = true; $("#modal").hidden = true; kioskReset(); $("#kiosk").hidden = false; document.body.style.overflow = "hidden"; renderKiosk(true); }
 function closeKiosk(){ $("#kiosk").hidden = true; document.body.style.overflow = ""; }
@@ -837,8 +909,13 @@ function renderKiosk(focus){
   const body = $("#kBody"), c = S.config;
   const keepScroll = $("#kiosk").scrollTop;
   if(!S.ready){ body.innerHTML = '<p class="k-p">Loading the ballot…</p>'; return; }
+  if(c.status === "nominating" || K.step === "nomdone"){ renderNominate(body, focus); return; }
+  if(c.status === "open" && !K.member){
+    if(!c.require_codes && (K.step === "who" || K.step === "code")) K.step = "ballot";
+    if(c.require_codes && (K.step === "ballot" || K.step === "review")){ K.step = "who"; K.picks = {}; }
+  }
   if(c.status === "setup" && K.step !== "done"){
-    body.innerHTML = '<h2 class="k-h">Voting hasn’t opened yet</h2><p class="k-p">Your advisor will open the ballot when it’s time to vote. Check back then.</p>';
+    body.innerHTML = '<h2 class="k-h">Voting hasn’t opened yet</h2><p class="k-p">Your advisor will open nominations and then the ballot. Check back then.</p>';
     return;
   }
   if(c.status !== "open" && K.step !== "done"){
@@ -916,9 +993,9 @@ function renderKiosk(focus){
   if(K.step === "done"){
     body.innerHTML = `<div class="k-done">
       <h2 class="k-h">Ballot cast.</h2>
-      <p class="k-p">Thank you${K.member ? ", " + esc(K.member.name.split(" ")[0]) : ""}. Please pass the device to the next member.</p>
-      <button class="k-btn" id="kNext" style="max-width:360px">Next voter</button></div>`;
-    $("#kNext").focus();
+      <p class="k-p">Thank you${K.member ? ", " + esc(K.member.name.split(" ")[0]) : ""}. ${(K.member || K.supervised) ? "Please pass the device to the next member." : "Your vote is counted. You can close this page."}</p>
+      ${(K.member || K.supervised) ? '<button class="k-btn" id="kNext" style="max-width:360px">Next voter</button>' : ""}</div>`;
+    if($("#kNext")) $("#kNext").focus();
   }
 }
 
@@ -947,10 +1024,10 @@ $("#kiosk").addEventListener("click", async e => {
   if(t.id === "kCast"){
     t.disabled = true; t.textContent = "Casting…";
     try{
-      const r = await Store.cast(K.member.id, K.code, {...K.picks});
+      const r = K.member ? await Store.cast(K.member.id, K.code, {...K.picks}) : await Store.castOpen({...K.picks}, deviceToken());
       if(r !== "ok"){ K.err = codeMsg(r); K.step = "review"; renderKiosk(); return; }
       K.step = "done"; renderKiosk();
-      clearTimeout(K._t); K._t = setTimeout(() => { if(K.step === "done"){ kioskReset(); renderKiosk(true); } }, 8000);
+      if(K.member || K.supervised){ clearTimeout(K._t); K._t = setTimeout(() => { if(K.step === "done"){ kioskReset(); renderKiosk(true); } }, 8000); }
     }catch(err){
       K.err = "Your ballot didn’t go through. Check the internet connection and tap Cast again.";
       renderKiosk();
@@ -960,10 +1037,70 @@ $("#kiosk").addEventListener("click", async e => {
   if(t.id === "kNext"){ clearTimeout(K._t); kioskReset(); renderKiosk(true); }
 });
 $("#kiosk").addEventListener("keydown", e => { if(e.key === "Enter" && e.target.id === "kCode") $("#kCodeGo").click(); });
+function renderNominate(body, focus){
+  const c = S.config;
+  if(K.step === "nomdone"){
+    const o = c.offices.find(x => x.id === K.nom.office);
+    body.innerHTML = `<div class="k-done" style="padding-top:6vh">
+      <h2 class="k-h">You’re in.</h2>
+      <p class="k-p">Your name was sent to your advisor for ${esc(o ? o.name : "the office you chose")}. Once your advisor checks the qualifications, you’ll appear on the ballot.</p>
+      <button class="k-btn" id="nAgain" style="max-width:360px">Done</button></div>`;
+    return;
+  }
+  if(!focus && body.contains(document.activeElement) && document.activeElement.matches("input,select")) return;
+  if(!c.offices.length){ body.innerHTML = '<h2 class="k-h">Nominations open soon</h2><p class="k-p">Your advisor is still choosing the offices. Check back shortly.</p>'; return; }
+  if(!c.offices.some(o => o.id === K.nom.office)) K.nom.office = c.offices[0].id;
+  const o = c.offices.find(x => x.id === K.nom.office);
+  const grades = ["9th grade","10th grade","11th grade","12th grade (senior)"];
+  body.innerHTML = `
+    <h2 class="k-h">Running for office?</h2>
+    <p class="k-p">Add your name for the office you want. Your advisor checks the qualifications before your name goes on the ballot.</p>
+    ${K.err ? `<p class="k-err" role="alert">${esc(K.err)}</p>` : ""}
+    <label class="k-lab" for="nOffice">Office</label>
+    <select class="k-search" id="nOffice">${c.offices.map(x => `<option value="${x.id}" ${x.id === K.nom.office ? "selected" : ""}>${esc(x.name)}</option>`).join("")}</select>
+    <div class="k-info">
+      ${o.duties && o.duties.length ? `<p><b>Responsibilities</b></p><ul>${o.duties.map(d => `<li>${esc(d)}</li>`).join("")}</ul>` : ""}
+      <p><b>Qualifications:</b> ${esc(qualFor(o.name))} Plus at least a “C” average with no failures and acceptable conduct on your last report card.</p>
+    </div>
+    <label class="k-lab" for="nName">Your full name</label>
+    <input class="k-search" id="nName" type="text" maxlength="80" autocomplete="name" value="${esc(K.nom.name)}" placeholder="First and last name">
+    <label class="k-lab" for="nGrade">Your grade while in office</label>
+    <select class="k-search" id="nGrade"><option value="">Choose your grade</option>${grades.map(g => `<option ${g === K.nom.grade ? "selected" : ""}>${g}</option>`).join("")}</select>
+    <div class="k-submit"><button class="k-btn" id="nGo">Submit my name</button></div>`;
+}
+function nomMsg(r){
+  return ({
+    duplicate: "You’re already nominated for this office.",
+    not_open: "Nominations have closed.",
+    bad_office: "That office is no longer on the ballot. Choose another.",
+    bad_input: "Enter your first and last name.",
+    full: "Too many nominations are waiting. Ask your advisor."
+  })[r] || "Something went wrong. Try again or ask your advisor.";
+}
+$("#kiosk").addEventListener("change", e => {
+  if(e.target.id === "nOffice"){ K.nom.office = e.target.value; K.err = ""; renderKiosk(true); }
+  if(e.target.id === "nGrade"){ K.nom.grade = e.target.value; }
+});
+$("#kiosk").addEventListener("input", e => { if(e.target.id === "nName"){ K.nom.name = e.target.value; } });
+$("#kiosk").addEventListener("click", async e => {
+  const t = e.target.closest("button"); if(!t) return;
+  if(t.id === "nAgain"){ K.nom = { office: K.nom.office, name: "", grade: "" }; K.err = ""; K.step = S.config.require_codes ? "who" : "ballot"; renderKiosk(true); return; }
+  if(t.id !== "nGo") return;
+  const name = K.nom.name.trim().replace(/\s+/g, " ");
+  if(name.split(" ").length < 2){ K.err = "Enter your first and last name."; renderKiosk(true); return; }
+  if(!K.nom.grade){ K.err = "Choose your grade."; renderKiosk(true); return; }
+  t.disabled = true; t.textContent = "Sending…";
+  try{
+    const r = await Store.submitNomination(K.nom.office, name, K.nom.grade);
+    if(r === "ok"){ K.err = ""; K.step = "nomdone"; } else K.err = nomMsg(r);
+  }catch(_){ K.err = "Your name didn’t go through. Check the internet connection and try again."; }
+  renderKiosk(true);
+});
 function codeMsg(r){
   return ({
     bad_code: "That code doesn’t match. Check your slip and try again.",
-    already_voted: "This member has already voted.",
+    already_voted: K.member ? "This member has already voted." : "This device has already been used to vote. Each phone or computer can vote once.",
+    codes_required: "Your advisor now requires voting codes. Reload the page to vote with your code.",
     locked: "Too many wrong codes. Ask your advisor for a new code.",
     not_on_roster: "This name isn’t on the roster anymore. Ask your advisor.",
     voting_closed: "Voting has closed.",
@@ -1146,11 +1283,13 @@ $("#roster").addEventListener("click", e => {
 $("#tab-vote").addEventListener("click", e => {
   const t = e.target.closest("button"); if(!t) return;
   if(t.id === "openVoting") guard(async () => { await Store.saveConfig({ status:"open" }); toast("Voting opened"); });
+  if(t.id === "openNoms") guard(async () => { await Store.saveConfig({ status:"nominating" }); toast("Nominations opened. Share the page link."); });
+  if(t.id === "closeNoms") guard(async () => { await Store.saveConfig({ status:"setup" }); toast("Nominations closed"); });
   if(t.id === "closeVoting") guard(async () => {
     const ok = await ask({title:"Close voting?", text:"No more ballots can be cast until you reopen it.", okLabel:"Close voting"});
     if(ok){ await Store.saveConfig({ status:"closed" }); toast("Voting closed"); }
   });
-  if(t.id === "openKiosk") openKiosk();
+  if(t.id === "openKiosk") openKiosk(true);
 });
 $("#resetVotes").onclick = () => guard(async () => {
   const ok = await ask({title:"Clear all votes?", text:"Every ballot and check-in is deleted. This can’t be undone.", okLabel:"Clear votes"});
@@ -1430,6 +1569,31 @@ $("#report").addEventListener("click", async e => {
     document.querySelectorAll("#report button[data-fmt]").forEach(b => b.disabled = false);
   }
 });
+
+/* ---------- Nominations review ---------- */
+$("#noms").addEventListener("click", e => {
+  const t = e.target.closest("button"); if(!t) return;
+  const n = (S.noms || []).find(x => x.id === t.closest(".nom").dataset.nid); if(!n) return;
+  if(t.classList.contains("n-ok")) guard(async () => {
+    const offices = JSON.parse(JSON.stringify(S.config.offices));
+    const o = offices.find(x => x.id === n.office_id);
+    if(!o){ toast("That office is no longer on the ballot."); return; }
+    if(!o.candidates.some(cd => cd.name.toLowerCase() === n.name.toLowerCase())){
+      o.candidates.push({ id: uid(), name: n.name, note: n.grade || "" });
+      await Store.saveConfig({ offices });
+    }
+    await Store.setNomination(n.id, "approved");
+    toast(n.name + " is on the ballot for " + o.name);
+  });
+  if(t.classList.contains("n-no")) guard(async () => {
+    const ok = await ask({ title: "Decline " + n.name + "?", text: "They won’t appear on the ballot. They can submit again if nominations are still open.", okLabel: "Decline" });
+    if(ok){ await Store.setNomination(n.id, "declined"); toast("Nomination declined"); }
+  });
+});
+$("#reqCodes").addEventListener("change", e => guard(async () => {
+  await Store.saveConfig({ require_codes: e.target.checked });
+  toast(e.target.checked ? "Voting codes required" : "Anyone with the link can vote");
+}));
 
 /* ---------- Advisor access (Supabase Auth) ---------- */
 let admin = false;
