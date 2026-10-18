@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Denton-Lewisville Kappa League Election</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -61,7 +62,7 @@ section.block{background:var(--surface);border:1px solid var(--line);border-radi
 .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
 .field label{font-weight:600;font-size:.92rem}
 .field .hint{font-size:.82rem;color:var(--muted)}
-input[type=text],input[type=password],input[type=date],textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+input[type=text],input[type=email],input[type=password],input[type=date],textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
 textarea{min-height:110px;resize:vertical}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .row > input{flex:1 1 180px}
@@ -212,6 +213,8 @@ textarea{min-height:110px;resize:vertical}
 .steps{margin:0;padding-left:22px}
 .steps li{margin-bottom:8px}
 #mdAlt{margin-right:auto}
+.vcode{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;letter-spacing:.08em;background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:0 5px;margin-left:4px}
+.lg-err{background:var(--soft);color:var(--warn);padding:8px 12px;border-radius:8px;font-weight:600;margin:0 0 12px}
 .dl-row .btn{display:inline-flex;align-items:center;gap:6px}
 .r-hint{font-size:.9rem;color:var(--muted);margin:10px 0 0;max-width:62ch}
 @media (max-width:560px){.grid2{grid-template-columns:1fr}.paper{padding:18px}}
@@ -232,7 +235,7 @@ textarea{min-height:110px;resize:vertical}
     <div class="status-row">
       <span class="pill" id="mStatus"><span class="dot"></span><span>Setting up</span></span>
       <span id="mCount"></span>
-      <button class="lock" id="lockBtn">Lock and return to ballot</button>
+      <button class="lock" id="lockBtn">Sign out and return to ballot</button>
     </div>
     <nav class="tabs" role="tablist">
       <button class="tab" role="tab" data-tab="setup" aria-selected="true">Nomination</button>
@@ -280,13 +283,14 @@ textarea{min-height:110px;resize:vertical}
 
     <section class="block">
       <h2>Voter roster</h2>
-      <p class="lede">Members check in by tapping their name, so each person votes once. Leave the roster empty to skip check-in.</p>
+      <p class="lede">Every member gets a personal voting code. To vote, they tap their name and enter their code, so each person votes once and nobody can vote for someone else.</p>
       <div class="field">
         <label for="fRoster">Add members</label>
         <textarea id="fRoster" placeholder="One name per line"></textarea>
       </div>
       <div class="row">
         <button class="btn primary" id="addRoster">Add to roster</button>
+        <button class="btn" id="printCodes">Print voting codes</button>
         <span class="hint" id="rosterCount" style="color:var(--muted);font-size:.9rem"></span>
       </div>
       <div class="roster" id="roster"></div>
@@ -310,12 +314,18 @@ textarea{min-height:110px;resize:vertical}
   <!-- ADVISOR -->
   <div id="tab-advisor" hidden>
     <section class="block">
-      <h2>Advisor access</h2>
-      <p class="lede">This page opens on the ballot for members. Advisors tap “Advisor sign in” at the top of the ballot and enter the PIN to reach nominations, voting controls, and results. Share the PIN only with advisors running the election.</p>
-      <div class="row">
-        <button class="btn primary" id="changePin">Change PIN</button>
-      </div>
-      <p class="r-hint">Forgot the PIN? The person who created this page, or anyone they’ve made an editor, sees “Reset PIN” on the sign-in screen.</p>
+      <h2>Advisor account</h2>
+      <p class="lede" id="whoami">Signed in.</p>
+      <div class="row"><button class="btn" id="signOutBtn">Sign out</button></div>
+    </section>
+    <section class="block">
+      <h2>Adding another advisor</h2>
+      <p class="lede">Advisor accounts are managed in the Supabase project “DLA Kappa League Elections App.”</p>
+      <ol class="steps">
+        <li>In Supabase, open Authentication, then Users, and add a user with the advisor’s email and a password. Turn on auto-confirm.</li>
+        <li>In the SQL editor, run: <code>insert into kl_advisors (email) values ('advisor@example.com');</code> with their email.</li>
+        <li>Share the page link. They sign in with “Advisor sign in” on the ballot screen.</li>
+      </ol>
     </section>
   </div>
 
@@ -462,8 +472,8 @@ textarea{min-height:110px;resize:vertical}
         <h3>Sign in as the advisor</h3>
         <ul>
           <li>The page opens on the members’ ballot. Tap “Advisor sign in” at the top.</li>
-          <li>The first time, create a 4 to 8 digit PIN. Share it only with advisors.</li>
-          <li>After that, enter the PIN to reach the advisor tabs.</li>
+          <li>Sign in with your advisor email and password. Accounts are added in Supabase (see the Advisor tab).</li>
+          <li>When you’re signed in, you see the advisor tabs. Signing out returns the page to the ballot.</li>
         </ul>
       </div></div>
 
@@ -474,7 +484,8 @@ textarea{min-height:110px;resize:vertical}
           <li>Review the qualifications for office before accepting any nominee.</li>
           <li>Tap “Choose offices,” check the offices on this year’s ballot, and tap “Add selected offices.”</li>
           <li>Under each office, add each nominee’s name and grade.</li>
-          <li>Paste the voter roster, one member per line, and tap “Add to roster.”</li>
+          <li>Paste the voter roster, one member per line, and tap “Add to roster.” Each member gets a voting code.</li>
+          <li>Tap “Print voting codes,” cut the slips apart, and give each member their own slip.</li>
         </ul>
       </div></div>
 
@@ -483,14 +494,14 @@ textarea{min-height:110px;resize:vertical}
         <ul>
           <li>Go to Voting and tap “Open voting.”</li>
           <li>Tap “Open ballot screen.” This locks the advisor area so members can’t see results.</li>
-          <li>Hand the device to the first member.</li>
+          <li>Members can vote on their own phones from the page link, or you can hand this device to each member.</li>
         </ul>
       </div></div>
 
       <div class="guide-step"><span class="guide-num">4</span><div>
         <h3>Members vote</h3>
         <ul>
-          <li>Each member taps their name. Names of members who already voted are greyed out.</li>
+          <li>Each member taps their name and enters their voting code. Names of members who already voted are greyed out.</li>
           <li>They read each office’s responsibilities and choose one nominee, or “No vote.”</li>
           <li>They review their choices and tap “Cast my ballot.”</li>
           <li>They pass the device to the next member. The screen resets on its own.</li>
@@ -500,7 +511,7 @@ textarea{min-height:110px;resize:vertical}
       <div class="guide-step"><span class="guide-num">5</span><div>
         <h3>Close voting and check results</h3>
         <ul>
-          <li>When everyone has voted, sign back in with the PIN.</li>
+          <li>When everyone has voted, tap “Advisor sign in” and sign back in.</li>
           <li>Go to Voting and tap “Close voting.”</li>
           <li>Go to Results to see the winner of each office. Ties are flagged for a runoff.</li>
         </ul>
@@ -521,11 +532,26 @@ textarea{min-height:110px;resize:vertical}
       <h2>Good to know</h2>
       <ul class="guide-notes">
         <li>Ballots are anonymous. The app records who voted, but not how they voted.</li>
-        <li>Tap “Lock and return to ballot” any time you step away from the device.</li>
+        <li>Tap “Sign out and return to ballot” any time you step away from the device.</li>
         <li>To start over, use “Clear all votes” on the Voting tab. Offices, nominees, and the roster stay.</li>
-        <li>Forgot the PIN? The person who created this page can reset it from the sign-in screen.</li>
+        <li>Lost voting code? Sign in, find the member on the roster, and tap ↻ to give them a new one.</li>
+        <li>Forgot your password? Whoever manages the chapter’s Supabase project can reset it.</li>
       </ul>
     </section>
+  </div>
+</div>
+
+<div class="modal" id="login" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="lgH">
+    <h3 id="lgH">Advisor sign in</h3>
+    <p>Sign in with your advisor account to manage nominations, voting, and results.</p>
+    <p class="lg-err" id="lgErr" role="alert" hidden></p>
+    <div class="field"><label for="lgEmail">Email</label><input type="email" id="lgEmail" autocomplete="username"></div>
+    <div class="field"><label for="lgPw">Password</label><input type="password" id="lgPw" autocomplete="current-password"></div>
+    <div class="row">
+      <button class="btn ghost" id="lgCancel">Cancel</button>
+      <button class="btn primary" id="lgGo">Sign in</button>
+    </div>
   </div>
 </div>
 
@@ -552,62 +578,94 @@ const uid = () => Math.random().toString(36).slice(2,10) + Date.now().toString(3
 const DEFAULT_CONFIG = { title:"", pin:"", status:"setup", offices:[], roster:[] };
 const S = { config: {...DEFAULT_CONFIG}, ballots: [], checkins: {}, ready:false };
 
-/* ---------- Storage: shared db, with a this-device fallback ---------- */
-const LS_KEY = "dlkl-election-v1";
-const local = {
-  read(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }catch(e){ return {}; } },
-  write(o){ try{ localStorage.setItem(LS_KEY, JSON.stringify(o)); }catch(e){} }
-};
+/* ---------- Storage: Supabase (DLA Kappa project) ---------- */
+const SB_URL = "https://knetoorjqnqdfcolbbdl.supabase.co";
+const SB_KEY = "sb_publishable_ITBUdBL61aAIQcICxxvnBw_55G94N7G";
+const sb = window.supabase.createClient(SB_URL, SB_KEY);
+function dbErr(e){ return { code: e && (e.code === "42501" || e.code === "PGRST301") ? "invalid_argument" : "unavailable", message: e && e.message }; }
 const Store = {
-  db:null,
+  isAdvisor: false, _sig: null,
   async init(){
-    let db = null;
-    try{ db = window.claude && window.claude.use ? await window.claude.use("db") : null; }catch(e){ db = null; }
-    if(db){
-      this.db = db;
-      setSync("Saved online — any device that opens this page sees the same election.");
-      db.doc("election/config").onSnapshot(s => {
-        S.config = Object.assign({...DEFAULT_CONFIG}, s.exists ? s.data() : {});
-        S.ready = true; render();
-      }, onDbErr);
-      db.collection("ballots").onSnapshot(s => { S.ballots = s.docs.map(d => d.data()); render(); }, onDbErr);
-      db.collection("checkins").onSnapshot(s => {
-        const m = {}; s.docs.forEach(d => m[d.id] = true); S.checkins = m; render();
-      }, onDbErr);
-    } else {
-      setSync("Saved on this device only.");
-      const o = local.read();
-      S.config = Object.assign({...DEFAULT_CONFIG}, o.config || {});
-      S.ballots = o.ballots || []; S.checkins = o.checkins || {};
-      S.ready = true; render();
+    try{ await sb.auth.signOut({ scope: "local" }); }catch(_){}
+    await this.load();
+    setInterval(() => { if(!document.hidden) this.load(); }, 6000);
+  },
+  async refreshRole(){
+    const { data } = await sb.auth.getSession();
+    if(!data.session){ this.isAdvisor = false; return false; }
+    const r = await sb.rpc("kl_is_advisor");
+    this.isAdvisor = !r.error && r.data === true;
+    return this.isAdvisor;
+  },
+  async load(){
+    try{
+      const st = await sb.from("kl_settings").select("title,status,offices").eq("id", 1).single();
+      if(st.error) throw st.error;
+      let roster, ballots = [];
+      if(admin && this.isAdvisor){
+        const [r, bl] = await Promise.all([
+          sb.from("kl_roster").select("id,name,code,voted").order("name"),
+          sb.from("kl_ballots").select("choices,cast_on")
+        ]);
+        if(r.error) throw r.error; if(bl.error) throw bl.error;
+        roster = r.data; ballots = bl.data.map(x => ({ choices: x.choices, at: x.cast_on }));
+      } else {
+        const r = await sb.rpc("kl_public_roster"); if(r.error) throw r.error;
+        roster = r.data;
+      }
+      const sig = JSON.stringify([st.data, roster, ballots, admin]);
+      setSync("Connected. Every device that opens this page shares the same election.");
+      if(sig === this._sig) return;
+      this._sig = sig;
+      const checkins = {}; roster.forEach(m => { if(m.voted) checkins[m.id] = true; });
+      S.config = Object.assign({...DEFAULT_CONFIG}, st.data, { roster: roster.map(m => ({ id: m.id, name: m.name, code: m.code })) });
+      S.checkins = checkins; S.ballots = ballots; S.ready = true;
+      render();
+    }catch(e){
+      const detail = e && (e.message || e.code) ? " Details: " + (e.code ? e.code + " " : "") + (e.message || "") : "";
+      setSync("Can’t reach the election database right now. This page keeps trying." + detail);
+      if(!S.ready && !$("#kiosk").hidden) $("#kBody").innerHTML = '<p class="k-p">Can’t reach the ballot right now. Check your internet connection; this page keeps trying.</p>';
     }
   },
-  persistLocal(){ local.write({config:S.config, ballots:S.ballots, checkins:S.checkins}); },
   async saveConfig(patch){
-    const next = JSON.parse(JSON.stringify(Object.assign({}, S.config, patch)));
-    S.config = next; render();
-    if(this.db){ await this.db.doc("election/config").set(next); } else { this.persistLocal(); }
+    const row = {};
+    ["title","status","offices"].forEach(k => { if(k in patch) row[k] = JSON.parse(JSON.stringify(patch[k])); });
+    if(!Object.keys(row).length) return;
+    Object.assign(S.config, row); render();
+    row.updated_at = new Date().toISOString();
+    const { data, error } = await sb.from("kl_settings").update(row).eq("id", 1).select("id");
+    if(error) throw dbErr(error);
+    if(!data || !data.length) throw { code: "invalid_argument" };
+    this._sig = null; await this.load();
   },
-  async hasVoted(memberId){
-    if(this.db){ const s = await this.db.doc("checkins/" + memberId).get(); return s.exists; }
-    return !!S.checkins[memberId];
+  async addMembers(names){
+    const { error } = await sb.from("kl_roster").insert(names.map(n => ({ name: n })));
+    if(error) throw dbErr(error);
+    this._sig = null; await this.load();
   },
-  async cast(memberId, choices){
-    const ballot = { choices, at: new Date().toISOString() };
-    if(this.db){
-      if(memberId) await this.db.doc("checkins/" + memberId).set({ at: ballot.at });
-      await this.db.collection("ballots").doc(uid()).set(ballot);
-    } else {
-      if(memberId) S.checkins[memberId] = true;
-      S.ballots.push(ballot); this.persistLocal(); render();
-    }
+  async removeMember(id){
+    const { error } = await sb.from("kl_roster").delete().eq("id", id);
+    if(error) throw dbErr(error);
+    this._sig = null; await this.load();
+  },
+  async newCode(id){
+    const { data, error } = await sb.rpc("kl_new_member_code", { p_member: id });
+    if(error || !data) throw dbErr(error || { code: "42501" });
+    this._sig = null; await this.load(); return data;
+  },
+  async checkCode(id, code){
+    const { data, error } = await sb.rpc("kl_check_code", { p_member: id, p_code: code });
+    if(error) throw dbErr(error); return data;
+  },
+  async cast(id, code, choices){
+    const { data, error } = await sb.rpc("kl_cast_ballot", { p_member: id, p_code: code, p_choices: choices });
+    if(error) throw dbErr(error);
+    this._sig = null; this.load(); return data;
   },
   async clearVotes(){
-    if(this.db){
-      const [b, c] = await Promise.all([this.db.collection("ballots").get(), this.db.collection("checkins").get()]);
-      for(const d of b.docs) await this.db.doc("ballots/" + d.id).delete();
-      for(const d of c.docs) await this.db.doc("checkins/" + d.id).delete();
-    } else { S.ballots = []; S.checkins = {}; this.persistLocal(); render(); }
+    const { data, error } = await sb.rpc("kl_clear_votes");
+    if(error || data !== "ok") throw dbErr(error || { code: "42501" });
+    this._sig = null; await this.load();
   }
 };
 function onDbErr(e){
@@ -682,6 +740,7 @@ function render(){
 
 function renderOffices(){
   const wrap = $("#offices");
+  if(wrap.contains(document.activeElement) && document.activeElement.matches("input,textarea")) return;
   if(!S.config.offices.length){ wrap.innerHTML = '<p class="empty">No offices yet. Choose them from the bylaws below.</p>'; return; }
   wrap.innerHTML = S.config.offices.map((o, i) => `
     <div class="office" data-oid="${o.id}">
@@ -710,7 +769,8 @@ function renderRoster(){
   $("#rosterCount").textContent = r.length ? r.length + " members · " + Object.keys(S.checkins).length + " voted" : "";
   $("#roster").innerHTML = r.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(m => `
     <span class="chip ${S.checkins[m.id] ? "voted" : ""}" data-mid="${m.id}">
-      ${S.checkins[m.id] ? '<span class="tick" aria-label="voted">✓</span>' : ""}${esc(m.name)}
+      ${S.checkins[m.id] ? '<span class="tick" aria-label="voted">✓</span>' : ""}${esc(m.name)}${m.code ? `<code class="vcode">${esc(m.code)}</code>` : ""}
+      <button class="x m-code" title="Give a new code" aria-label="New voting code for ${esc(m.name)}">↻</button>
       <button class="x m-del" aria-label="Remove ${esc(m.name)}">×</button>
     </span>`).join("");
 }
@@ -766,9 +826,11 @@ function renderResults(){
 }
 
 /* ---------- Kiosk ---------- */
-const K = { step:"who", member:null, picks:{}, q:"", err:"" };
-function kioskReset(){ K.step = S.config.roster.length ? "who" : "ballot"; K.member = null; K.picks = {}; K.q = ""; K.err = ""; }
-function openKiosk(){ admin = false; $("#modal").hidden = true; kioskReset(); $("#kiosk").hidden = false; document.body.style.overflow = "hidden"; renderKiosk(true); }
+const K = { step:"who", member:null, code:"", picks:{}, q:"", err:"" };
+function kioskReset(){ K.step = "who"; K.member = null; K.code = ""; K.picks = {}; K.q = ""; K.err = ""; }
+function openKiosk(){
+  if(admin){ sb.auth.signOut().catch(() => {}); Store.isAdvisor = false; S.ballots = []; S.config.roster = S.config.roster.map(m => ({ id: m.id, name: m.name })); Store._sig = null; Store.load(); }
+  admin = false; $("#login").hidden = true; $("#modal").hidden = true; kioskReset(); $("#kiosk").hidden = false; document.body.style.overflow = "hidden"; renderKiosk(true); }
 function closeKiosk(){ $("#kiosk").hidden = true; document.body.style.overflow = ""; }
 
 function renderKiosk(focus){
@@ -794,6 +856,17 @@ function renderKiosk(focus){
       <div class="k-names">${list.map(m => `<button class="k-name" data-mid="${m.id}" ${S.checkins[m.id] ? "disabled" : ""}>${esc(m.name)}${S.checkins[m.id] ? " · voted" : ""}</button>`).join("") || '<p class="k-p">No match. Ask your advisor to add you.</p>'}</div>`;
     const inp = $("#kQ");
     if(focus || document.activeElement === document.body){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+    return;
+  }
+  if(K.step === "code"){
+    body.innerHTML = `
+      <h2 class="k-h">Hi, ${esc(K.member.name.split(" ")[0])}</h2>
+      <p class="k-p">Enter the voting code from your slip.</p>
+      ${K.err ? `<p class="k-err" role="alert">${esc(K.err)}</p>` : ""}
+      <input class="k-search" id="kCode" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="8" placeholder="Voting code" aria-label="Voting code" style="letter-spacing:.25em;text-transform:uppercase">
+      <button class="k-btn" id="kCodeGo">Continue</button>
+      <button class="k-btn alt" id="kBack">Not you? Go back</button>`;
+    $("#kCode").focus();
     return;
   }
   if(K.step === "ballot"){
@@ -854,8 +927,18 @@ $("#kiosk").addEventListener("click", async e => {
   if(t.id === "kExit"){ advisorSignIn(); return; }
   if(t.classList.contains("k-name")){
     const m = S.config.roster.find(x => x.id === t.dataset.mid); if(!m) return;
-    try{ if(await Store.hasVoted(m.id)){ K.err = m.name + " has already voted."; renderKiosk(); return; } }catch(_){}
-    K.member = m; K.err = ""; K.step = "ballot"; $("#kiosk").scrollTop = 0; renderKiosk(); return;
+    K.member = m; K.err = ""; K.step = "code"; $("#kiosk").scrollTop = 0; renderKiosk(); return;
+  }
+  if(t.id === "kCodeGo"){
+    const code = ($("#kCode").value || "").trim().toUpperCase();
+    if(!code){ $("#kCode").focus(); return; }
+    t.disabled = true; t.textContent = "Checking…";
+    try{
+      const r = await Store.checkCode(K.member.id, code);
+      if(r === "ok"){ K.code = code; K.err = ""; K.step = "ballot"; }
+      else K.err = codeMsg(r);
+    }catch(_){ K.err = "Couldn’t check your code. Check the internet connection and try again."; }
+    renderKiosk(); return;
   }
   if(t.classList.contains("choice")){ K.picks[t.dataset.oid] = t.dataset.cid; renderKiosk(); return; }
   if(t.id === "kBack"){ kioskReset(); renderKiosk(true); return; }
@@ -864,18 +947,29 @@ $("#kiosk").addEventListener("click", async e => {
   if(t.id === "kCast"){
     t.disabled = true; t.textContent = "Casting…";
     try{
-      if(K.member && await Store.hasVoted(K.member.id)){ K.err = "This member has already voted."; K.step = "review"; renderKiosk(); return; }
-      await Store.cast(K.member ? K.member.id : null, {...K.picks});
+      const r = await Store.cast(K.member.id, K.code, {...K.picks});
+      if(r !== "ok"){ K.err = codeMsg(r); K.step = "review"; renderKiosk(); return; }
       K.step = "done"; renderKiosk();
       clearTimeout(K._t); K._t = setTimeout(() => { if(K.step === "done"){ kioskReset(); renderKiosk(true); } }, 8000);
     }catch(err){
-      K.err = err && err.code === "invalid_argument" ? "This device can’t record votes. Ask your advisor." : "Your ballot didn’t go through. Tap Cast again.";
+      K.err = "Your ballot didn’t go through. Check the internet connection and tap Cast again.";
       renderKiosk();
     }
     return;
   }
   if(t.id === "kNext"){ clearTimeout(K._t); kioskReset(); renderKiosk(true); }
 });
+$("#kiosk").addEventListener("keydown", e => { if(e.key === "Enter" && e.target.id === "kCode") $("#kCodeGo").click(); });
+function codeMsg(r){
+  return ({
+    bad_code: "That code doesn’t match. Check your slip and try again.",
+    already_voted: "This member has already voted.",
+    locked: "Too many wrong codes. Ask your advisor for a new code.",
+    not_on_roster: "This name isn’t on the roster anymore. Ask your advisor.",
+    voting_closed: "Voting has closed.",
+    bad_ballot: "The ballot changed while you were voting. Tap “Change my choices” and check each office."
+  })[r] || "Something went wrong. Ask your advisor.";
+}
 $("#kiosk").addEventListener("input", e => { if(e.target.id === "kQ"){ K.q = e.target.value; K.err = ""; renderKiosk(); } });
 
 /* ---------- Setup events ---------- */
@@ -1029,15 +1123,23 @@ $("#offices").addEventListener("change", e => {
 $("#addRoster").onclick = () => guard(async () => {
   const have = new Set(S.config.roster.map(m => m.name.toLowerCase()));
   const names = $("#fRoster").value.split(/\n|,/).map(s => s.trim()).filter(Boolean);
-  const add = []; for(const n of names){ if(!have.has(n.toLowerCase())){ have.add(n.toLowerCase()); add.push({ id: uid(), name: n }); } }
+  const add = []; for(const n of names){ if(!have.has(n.toLowerCase())){ have.add(n.toLowerCase()); add.push(n); } }
   if(!add.length){ toast(names.length ? "Everyone listed is already on the roster" : "Type at least one name"); return; }
-  await Store.saveConfig({ roster: [...S.config.roster, ...add] });
+  await Store.addMembers(add);
   $("#fRoster").value = ""; toast("Added " + add.length + (add.length === 1 ? " member" : " members"));
 });
 $("#roster").addEventListener("click", e => {
-  const t = e.target.closest(".m-del"); if(!t) return;
+  const t = e.target.closest(".m-del, .m-code"); if(!t) return;
   const mid = t.closest(".chip").dataset.mid;
-  guard(() => Store.saveConfig({ roster: S.config.roster.filter(m => m.id !== mid) }));
+  const m = S.config.roster.find(x => x.id === mid); if(!m) return;
+  if(t.classList.contains("m-code")) guard(async () => {
+    const ok = await ask({ title: "New code for " + m.name + "?", text: "Their old code stops working right away.", okLabel: "Give new code" });
+    if(ok){ const c = await Store.newCode(mid); toast(m.name + "’s new code: " + c); }
+  });
+  else guard(async () => {
+    const ok = await ask({ title: "Remove " + m.name + "?", text: "They come off the roster and can’t vote.", okLabel: "Remove" });
+    if(ok) await Store.removeMember(mid);
+  });
 });
 
 /* ---------- Voting controls ---------- */
@@ -1329,70 +1431,63 @@ $("#report").addEventListener("click", async e => {
   }
 });
 
-/* ---------- Advisor access ---------- */
-let admin = false, userP = null, fails = 0, lockedUntil = 0;
-function getUser(){
-  if(!userP) userP = (window.claude && window.claude.use) ? window.claude.use("user").catch(() => null) : Promise.resolve(null);
-  return userP;
+/* ---------- Advisor access (Supabase Auth) ---------- */
+let admin = false;
+function lgErr(msg){ const e = $("#lgErr"); e.textContent = msg || ""; e.hidden = !msg; }
+function advisorSignIn(){
+  lgErr(""); $("#lgPw").value = ""; $("#login").hidden = false; $("#lgEmail").focus();
 }
-async function canManagePin(){
-  if(!Store.db) return true;
-  const u = await getUser(); if(!u) return true;
-  try{ return await u.canEdit(); }catch(_){ return false; }
-}
-async function hashPin(salt, pin){
-  const data = new TextEncoder().encode(salt + ":" + pin);
-  const buf = await crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
-}
-async function verifyPin(v){
-  const c = S.config; v = (v || "").trim();
-  if(c.pinHash) return (await hashPin(c.pinSalt || "", v)) === c.pinHash;
-  if(c.pin){
-    if(v !== c.pin) return false;
-    const salt = uid() + uid();
-    guard(async () => Store.saveConfig({ pinSalt: salt, pinHash: await hashPin(salt, v), pin: "" }));
-    return true;
-  }
-  return false;
-}
-async function createPin(title, text){
-  const a = await ask({ title, text, okLabel:"Next", input:true }); if(a === null) return false;
-  if(!/^\d{4,8}$/.test(a.trim())){ toast("Use 4 to 8 digits for the PIN."); return false; }
-  const b = await ask({ title:"Confirm the PIN", text:"Enter the same PIN again.", okLabel:"Save PIN", input:true }); if(b === null) return false;
-  if(a.trim() !== b.trim()){ toast("The PINs didn’t match. Try again."); return false; }
-  const salt = uid() + uid(); let ok = false;
-  await guard(async () => { await Store.saveConfig({ pinSalt: salt, pinHash: await hashPin(salt, a.trim()), pin: "" }); ok = true; });
-  if(ok) toast("Advisor PIN saved");
-  return ok;
-}
-function unlockAdmin(){ admin = true; fails = 0; closeKiosk(); render(); window.scrollTo(0, 0); }
-async function advisorSignIn(){
-  if(!S.ready) return;
-  const c = S.config;
-  if(!(c.pinHash || c.pin)){
-    if(!(await canManagePin())){
-      await ask({ title:"Advisor access isn’t set up yet", text:"The person who created this page needs to sign in first and create the advisor PIN.", okLabel:"OK" });
+async function doLogin(){
+  const email = $("#lgEmail").value.trim(), password = $("#lgPw").value;
+  if(!email || !password){ lgErr("Enter your email and password."); return; }
+  const btn = $("#lgGo"); btn.disabled = true; btn.textContent = "Signing in…";
+  try{
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    if(error){ lgErr("That email and password don’t match an advisor account."); return; }
+    if(!(await Store.refreshRole())){
+      await sb.auth.signOut().catch(() => {});
+      lgErr("This account isn’t on the advisor list. Ask whoever manages the chapter’s Supabase project to add your email.");
       return;
     }
-    if(await createPin("Create the advisor PIN", "This is the first advisor sign-in. Choose a PIN of 4 to 8 digits. Advisors use it to open nominations, voting controls, and results.")) unlockAdmin();
-    return;
-  }
-  if(Date.now() < lockedUntil){ toast("Too many tries. Wait a minute, then try again."); return; }
-  const manager = await canManagePin();
-  const v = await ask({ title:"Advisor sign in", text:"Enter the advisor PIN.", okLabel:"Sign in", input:true, alt: manager ? "Reset PIN" : "" });
-  if(v === null) return;
-  if(v === "__alt"){
-    if(await createPin("Reset the advisor PIN", "Choose a new PIN of 4 to 8 digits. The old PIN stops working.")) unlockAdmin();
-    return;
-  }
-  if(await verifyPin(v)){ unlockAdmin(); return; }
-  fails++;
-  if(fails >= 5){ fails = 0; lockedUntil = Date.now() + 60000; toast("Too many tries. Wait a minute, then try again."); }
-  else toast("That PIN doesn’t match.");
+    $("#login").hidden = true; $("#lgPw").value = "";
+    $("#whoami").textContent = "Signed in as " + email + ".";
+    admin = true; closeKiosk(); Store._sig = null; await Store.load(); render(); window.scrollTo(0, 0);
+  }catch(_){ lgErr("Couldn’t reach the sign-in service. Check the internet connection."); }
+  finally{ btn.disabled = false; btn.textContent = "Sign in"; }
 }
+$("#lgGo").onclick = doLogin;
+$("#lgCancel").onclick = () => { $("#login").hidden = true; };
+$("#lgPw").addEventListener("keydown", e => { if(e.key === "Enter") doLogin(); });
+$("#lgEmail").addEventListener("keydown", e => { if(e.key === "Enter") $("#lgPw").focus(); });
 $("#lockBtn").onclick = () => openKiosk();
-$("#changePin").onclick = async () => { if(admin) await createPin("Change the advisor PIN", "Choose a new PIN of 4 to 8 digits. The old PIN stops working."); };
+$("#signOutBtn").onclick = () => openKiosk();
+
+/* ---------- Printable voting codes ---------- */
+$("#printCodes").onclick = async () => {
+  const roster = S.config.roster.filter(m => m.code).slice().sort((x, y) => x.name.localeCompare(y.name));
+  if(!roster.length){ toast("Add members to the roster first."); return; }
+  try{
+    await loadScript(JSPDF_URL);
+    const doc = new window.jspdf.jsPDF({ unit: "pt", format: "letter" });
+    const link = location.href.split("#")[0];
+    const title = (S.config.title || "Kappa League Officer Election").replace(/[\u2013\u2014]/g, "-");
+    const W = 612, M = 36, cols = 2, slipW = (W - 2 * M) / cols, slipH = 118;
+    roster.forEach((m, i) => {
+      const per = cols * 6, k = i % per;
+      if(i && k === 0) doc.addPage();
+      const x = M + (k % cols) * slipW, y = M + Math.floor(k / cols) * slipH;
+      doc.setDrawColor(180); doc.setLineDashPattern([3, 3], 0); doc.rect(x, y, slipW, slipH); doc.setLineDashPattern([], 0);
+      doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(158, 27, 50);
+      doc.text("Denton-Lewisville Kappa League | " + title, x + 12, y + 18, { maxWidth: slipW - 24 });
+      doc.setTextColor(30, 20, 22); doc.setFontSize(13); doc.text(m.name.replace(/[\u2018\u2019]/g, "'"), x + 12, y + 40, { maxWidth: slipW - 24 });
+      doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.text("Your voting code", x + 12, y + 60);
+      doc.setFont("courier", "bold"); doc.setFontSize(22); doc.text(m.code, x + 12, y + 84);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.setTextColor(90, 78, 81);
+      doc.text(doc.splitTextToSize("Vote at " + link + "  Keep this code private.", slipW - 24), x + 12, y + 100);
+    });
+    await saveFile(null, "kappa-league-voting-codes.pdf", doc.output("blob"));
+  }catch(_){ toast("The codes sheet couldn’t be created. Try again."); }
+};
 
 /* ---------- Constitution & Bylaws viewer ---------- */
 function showDoc(w){
