@@ -205,6 +205,9 @@ textarea{min-height:110px;resize:vertical}
 .dv-body ol{margin:-4px 0 14px;padding-left:30px;max-width:66ch}
 .dv-body li{margin-bottom:4px}
 .dv-sub{color:var(--muted);margin:0 0 6px}
+.cands{list-style:none;padding:0;margin:0 0 6px}
+.cands li{padding:10px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--surface);font-weight:600}
+.cands li span{color:var(--muted);font-weight:400;margin-left:8px}
 .blank{display:inline-block;min-width:140px;border-bottom:1px solid var(--muted)}
 .quals{margin:0;padding-left:20px}
 .quals li{margin-bottom:8px;max-width:70ch}
@@ -245,7 +248,7 @@ select.k-search{appearance:auto}
 
 <header class="mast">
   <div class="mast-inner">
-    <div class="mast-top"><p class="chapter">Denton-Lewisville Kappa League</p><span class="k-actions"><button class="docs-btn" data-open-docs>Constitution &amp; Bylaws</button><button class="docs-btn" data-open-docs="instructions">Instructions</button></span></div>
+    <div class="mast-top"><p class="chapter">Denton-Lewisville Kappa League</p><span class="k-actions"><button class="docs-btn" data-open-docs>Constitution &amp; Bylaws</button><button class="docs-btn" data-open-docs="candidates">Candidates</button><button class="docs-btn" data-open-docs="instructions">Instructions</button></span></div>
     <h1 class="title" id="mTitle">Officer Election</h1>
     <div class="status-row">
       <span class="pill" id="mStatus"><span class="dot"></span><span>Setting up</span></span>
@@ -390,7 +393,7 @@ select.k-search{appearance:auto}
   <div class="k-inner">
     <div class="k-top">
       <span id="kTitle">Kappa League Election</span>
-      <span class="k-actions"><button class="k-exit" data-open-docs>Constitution &amp; Bylaws</button><button class="k-exit" data-open-docs="instructions">Instructions</button></span>
+      <span class="k-actions"><button class="k-exit" data-open-docs>Constitution &amp; Bylaws</button><button class="k-exit" data-open-docs="candidates">Candidates</button><button class="k-exit" data-open-docs="instructions">Instructions</button></span>
     </div>
     <div id="kBody"></div>
     <p class="k-foot">No sign-in needed to nominate or vote. <button class="k-link" id="kExit">Advisors: sign in here</button></p>
@@ -399,9 +402,10 @@ select.k-search{appearance:auto}
 
 <div class="docview" id="docview" hidden role="dialog" aria-modal="true" aria-labelledby="dvTitle">
   <div class="dv-bar"><div class="dv-bar-inner">
-    <h2 id="dvTitle">Kappa League reference</h2>
+    <h2 id="dvTitle">Kappa League election</h2>
     <div class="dv-seg" role="group" aria-label="Choose a document">
       <button data-doc="constitution" aria-pressed="true">Constitution</button>
+      <button data-doc="candidates" aria-pressed="false">Candidates</button>
       <button data-doc="bylaws" aria-pressed="false">Bylaws</button>
       <button data-doc="instructions" aria-pressed="false">Instructions</button>
     </div>
@@ -448,6 +452,8 @@ select.k-search{appearance:auto}
     <p><b>Section 2.</b> The Kappa League shall engage in no programs or projects unless approved by the Fraternity appointed advisors.</p>
     <p><b>Section 3.</b> Without the fraternity-appointed advisors’ written approval, the Kappa League shall make no expenditure.</p>
   </div>
+
+  <div class="dv-body" id="dv-candidates" hidden></div>
 
   <div class="dv-body" id="dv-bylaws" hidden>
     <p class="dv-sub">Bylaws of the Kappa League.</p>
@@ -775,6 +781,7 @@ function render(){
   $("#mCount").textContent = nb + (nb === 1 ? " ballot cast" : " ballots cast") + (c.roster.length ? " of " + c.roster.length + " members" : "");
   if(document.activeElement !== $("#fTitle")) $("#fTitle").value = c.title || "";
   if(!render._kInit){ render._kInit = true; kioskReset(); }
+  if(!$("#docview").hidden && !$("#dv-candidates").hidden) renderCandidates();
   renderOffices(); renderPicker(); renderNoms(); renderRoster(); renderVote(); renderResults(); renderReport();
   if(!$("#kiosk").hidden) renderKiosk(false);
 }
@@ -1057,7 +1064,7 @@ function renderNominate(body, focus){
   const grades = ["9th grade","10th grade","11th grade","12th grade (senior)"];
   body.innerHTML = `
     <h2 class="k-h">Running for office?</h2>
-    <p class="k-p">Add your name for the office you want. Your advisor checks the qualifications before your name goes on the ballot.</p>
+    <p class="k-p">Add your name for the office you want. Your advisor checks the qualifications before your name goes on the ballot. <button class="k-link" data-open-docs="candidates">See who’s running</button></p>
     ${K.err ? `<p class="k-err" role="alert">${esc(K.err)}</p>` : ""}
     <label class="k-lab" for="nOffice">Office</label>
     <select class="k-search" id="nOffice">${c.offices.map(x => `<option value="${x.id}" ${x.id === K.nom.office ? "selected" : ""}>${esc(x.name)}</option>`).join("")}</select>
@@ -1656,10 +1663,26 @@ $("#printCodes").onclick = async () => {
   }catch(_){ toast("The codes sheet couldn’t be created. Try again."); }
 };
 
+/* ---------- Public candidates list ---------- */
+function renderCandidates(){
+  const el = $("#dv-candidates"); if(!el) return;
+  const c = S.config, offs = c.offices || [];
+  const stage = c.status === "nominating" ? "Nominations are open. Names appear here after an advisor approves them."
+    : c.status === "open" ? "Voting is open. These are the candidates on the ballot."
+    : c.status === "closed" ? "Voting is closed. These were the candidates on the ballot."
+    : "Nominations haven’t opened yet.";
+  el.innerHTML = `<p class="dv-sub">${esc(c.title || "Kappa League Officer Election")}</p><p>${stage}</p>`
+    + (offs.length ? offs.map(o => `<h3>${esc(o.name)}</h3>${o.candidates.length
+        ? `<ul class="cands">${o.candidates.map(cd => `<li>${esc(cd.name)}${cd.note ? `<span>${esc(cd.note)}</span>` : ""}</li>`).join("")}</ul>`
+        : '<p class="dv-sub">No approved candidates yet.</p>'}`).join("")
+      : '<p class="dv-sub">Offices haven’t been chosen yet.</p>');
+}
+
 /* ---------- Constitution & Bylaws viewer ---------- */
 function showDoc(w){
   document.querySelectorAll("#docview [data-doc]").forEach(b => b.setAttribute("aria-pressed", b.dataset.doc === w));
-  ["constitution","bylaws","instructions"].forEach(n => $("#dv-" + n).hidden = n !== w);
+  if(w === "candidates") renderCandidates();
+  ["constitution","candidates","bylaws","instructions"].forEach(n => $("#dv-" + n).hidden = n !== w);
   $("#docview").scrollTop = 0;
 }
 function openDocs(w){ $("#docview").hidden = false; showDoc(w || "constitution"); $("#dvClose").focus(); }
