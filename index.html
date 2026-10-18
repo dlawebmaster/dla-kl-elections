@@ -1,0 +1,1417 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Denton-Lewisville Kappa League Election</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#9E1B32; --crimson-deep:#6E0F22; --cream:#F3E6CF;
+  --bg:#F7F7F8; --surface:#FFFFFF; --ink:#1E1416; --muted:#6B5E61;
+  --line:#E3DCDD; --soft:#F6ECEE; --ok:#1F7A4D; --warn:#B4541A;
+  --on-crimson:#FFF6E6;
+  --display:"Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --body:"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#160E10; --surface:#22171A; --ink:#F5ECEC; --muted:#B8A9AC;
+    --line:#3A2B2F; --soft:#2E1D21; --crimson:#C9344F; --crimson-deep:#7A1428;
+    --ok:#4CC08A; --warn:#E58A4E; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#160E10; --surface:#22171A; --ink:#F5ECEC; --muted:#B8A9AC;
+  --line:#3A2B2F; --soft:#2E1D21; --crimson:#C9344F; --crimson-deep:#7A1428;
+  --ok:#4CC08A; --warn:#E58A4E; color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--crimson);outline-offset:2px}
+
+/* Masthead */
+.mast{background:var(--crimson-deep);color:var(--on-crimson);padding:28px 20px 0}
+.mast-inner{max-width:880px;margin:0 auto}
+.chapter{font-weight:600;font-size:.95rem;opacity:.85;margin:0}
+.title{font-family:var(--display);font-weight:900;font-size:clamp(2.4rem,8vw,4.2rem);line-height:.92;margin:6px 0 14px;letter-spacing:.01em}
+.status-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.92rem;margin-bottom:18px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:rgba(255,246,230,.14);font-weight:600}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+.pill.open .dot{background:#7CF0B4}
+.tabs{display:flex;gap:4px;overflow-x:auto}
+.tab{background:none;border:0;color:var(--on-crimson);opacity:.75;padding:12px 16px 14px;font-weight:700;cursor:pointer;border-radius:10px 10px 0 0;white-space:nowrap}
+.tab[aria-selected="true"]{opacity:1;background:var(--bg);color:var(--ink)}
+
+main{max-width:880px;margin:0 auto;padding:24px 20px 60px}
+.sync{font-size:.85rem;color:var(--muted);margin:0 0 18px}
+h2{font-family:var(--display);font-weight:800;font-size:1.9rem;line-height:1;margin:0 0 6px}
+h3{font-size:1.05rem;margin:0}
+.lede{color:var(--muted);margin:0 0 20px;max-width:60ch}
+section.block{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:18px}
+
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field label{font-weight:600;font-size:.92rem}
+.field .hint{font-size:.82rem;color:var(--muted)}
+input[type=text],input[type=password],input[type=date],textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+textarea{min-height:110px;resize:vertical}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row > input{flex:1 1 180px}
+
+.btn{border:1px solid var(--line);background:var(--surface);padding:9px 14px;border-radius:8px;font-weight:600;cursor:pointer}
+.btn:hover{border-color:var(--crimson)}
+.btn.primary{background:var(--crimson);border-color:var(--crimson);color:#fff}
+.btn.primary:hover{background:var(--crimson-deep)}
+.btn.ghost{border-color:transparent;background:none;color:var(--muted)}
+.btn.danger{color:var(--warn);border-color:var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.big{padding:14px 22px;font-size:1.05rem}
+
+.office{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;background:var(--bg)}
+.office-head{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.office-head input{font-weight:700}
+.cand{display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px dashed var(--line)}
+.cand:first-of-type{border-top:0}
+.cand .name{flex:1;font-weight:600}
+.cand .meta{color:var(--muted);font-size:.88rem}
+.x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:1.2rem;line-height:1;padding:4px 8px;border-radius:6px}
+.x:hover{color:var(--warn);background:var(--soft)}
+.empty{color:var(--muted);font-size:.92rem;padding:6px 0}
+
+.roster{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 4px 4px 10px;border-radius:999px;background:var(--soft);font-size:.9rem}
+.chip.voted{background:color-mix(in srgb,var(--ok) 16%,transparent)}
+.chip .tick{color:var(--ok);font-weight:700}
+
+/* Results */
+.res-office{margin-bottom:26px}
+.res-office h3{font-family:var(--display);font-weight:800;font-size:1.5rem;margin-bottom:10px}
+.bar{display:grid;grid-template-columns:minmax(110px,1fr) 3fr auto;gap:10px;align-items:center;margin-bottom:8px}
+.bar .who{font-weight:600}
+.bar .track{height:26px;background:var(--soft);border-radius:6px;overflow:hidden}
+.bar .fill{height:100%;background:var(--muted);border-radius:6px;transition:width .5s ease}
+.bar.lead .fill{background:var(--crimson)}
+.bar .n{font-variant-numeric:tabular-nums;font-weight:700;min-width:70px;text-align:right}
+.bar .n small{color:var(--muted);font-weight:500}
+.badge{display:inline-block;margin-left:8px;font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--crimson);color:#fff;vertical-align:middle}
+.badge.tie{background:var(--warn)}
+.stats{display:flex;gap:28px;flex-wrap:wrap;margin-bottom:20px}
+.stat b{display:block;font-family:var(--display);font-size:2.4rem;line-height:1;font-weight:900}
+.stat span{color:var(--muted);font-size:.9rem}
+
+/* Kiosk */
+.kiosk{position:fixed;inset:0;z-index:50;background:var(--crimson-deep);color:var(--on-crimson);overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 20px) 20px calc(env(safe-area-inset-bottom,0px) + 40px)}
+.kiosk[hidden]{display:none}
+.k-inner{max-width:940px;margin:0 auto}
+.k-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:28px;font-size:.9rem;opacity:.85}
+.k-exit{background:none;border:1px solid rgba(255,246,230,.35);color:var(--on-crimson);border-radius:8px;padding:6px 12px;cursor:pointer}
+.k-h{font-family:var(--display);font-weight:900;font-size:clamp(2.2rem,7vw,3.6rem);line-height:.95;margin:0 0 10px}
+.k-p{opacity:.85;margin:0 0 24px;font-size:1.05rem}
+.k-search{width:100%;padding:14px 16px;border-radius:10px;border:0;font-size:1.1rem;margin-bottom:14px;background:var(--on-crimson);color:#1E1416}
+.k-names{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.k-name{text-align:left;padding:14px 16px;border-radius:10px;border:1px solid rgba(255,246,230,.25);background:rgba(255,246,230,.07);color:var(--on-crimson);font-weight:600;cursor:pointer;font-size:1.02rem}
+.k-name:hover{background:rgba(255,246,230,.16)}
+.k-name:disabled{opacity:.4;cursor:not-allowed;text-decoration:line-through}
+.k-office{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:28px;align-items:start;padding:24px 0;border-top:1px solid rgba(255,246,230,.18)}
+.k-office h3{font-family:var(--display);font-weight:800;font-size:2rem;line-height:1;margin:0 0 10px}
+.k-duties ul{margin:0;padding-left:18px;font-size:.95rem;opacity:.85}
+.k-duties li{margin-bottom:5px}
+.k-office .k-sub{opacity:.7;font-size:.9rem;margin-bottom:12px}
+.choice{display:flex;align-items:center;gap:14px;width:100%;padding:16px 18px;margin-bottom:8px;border-radius:12px;border:2px solid rgba(255,246,230,.22);background:rgba(255,246,230,.06);color:var(--on-crimson);text-align:left;cursor:pointer;font-size:1.1rem;font-weight:600}
+.choice .ring{flex:none;width:24px;height:24px;border-radius:50%;border:2px solid currentColor;display:grid;place-items:center}
+.choice[aria-checked="true"]{background:var(--on-crimson);color:var(--crimson-deep);border-color:var(--on-crimson)}
+.choice[aria-checked="true"] .ring::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--crimson-deep)}
+.choice .cmeta{display:block;font-weight:400;font-size:.88rem;opacity:.75}
+.choice.abstain{font-weight:500;font-size:.98rem;padding:12px 18px}
+.k-submit{position:sticky;bottom:0;padding:16px 0 4px;background:linear-gradient(transparent,var(--crimson-deep) 30%)}
+.k-btn{width:100%;padding:18px;border-radius:12px;border:0;background:var(--on-crimson);color:var(--crimson-deep);font-weight:800;font-size:1.15rem;cursor:pointer}
+.k-btn:disabled{opacity:.45;cursor:not-allowed}
+.k-btn.alt{background:none;color:var(--on-crimson);border:1px solid rgba(255,246,230,.35);margin-top:10px;font-weight:600;font-size:1rem;padding:14px}
+.k-review li{margin-bottom:8px}
+.k-review{padding-left:20px;font-size:1.1rem;margin:0 0 24px}
+.k-done{text-align:center;padding-top:12vh}
+.k-done .k-h{font-size:clamp(3rem,12vw,6rem)}
+.k-err{background:rgba(0,0,0,.25);padding:10px 14px;border-radius:8px;margin-bottom:14px}
+
+/* Modal */
+.modal{position:fixed;inset:0;z-index:80;background:rgba(20,8,10,.55);display:grid;place-items:center;padding:20px}
+.modal[hidden]{display:none}
+.modal-card{background:var(--surface);color:var(--ink);border-radius:14px;padding:22px;max-width:420px;width:100%}
+.modal-card p{margin:6px 0 16px;color:var(--muted)}
+.modal-card .row{justify-content:flex-end;margin-top:12px}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;z-index:90;max-width:90vw}
+.toast[hidden]{display:none}
+.duties{margin:6px 0 0;padding-left:18px;color:var(--muted);font-size:.88rem}
+.duties li{margin-bottom:2px}
+.duties-edit{min-height:84px;font-size:.9rem;margin:0 0 10px}
+.picker{display:grid;gap:8px;margin:16px 0 12px}
+.pick{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);cursor:pointer}
+.pick:hover{border-color:var(--crimson)}
+.pick input{margin-top:3px;width:18px;height:18px;flex:none;accent-color:var(--crimson)}
+.pick b{display:block}
+.pick .note{color:var(--muted);font-weight:500;font-size:.85rem}
+.pick.added{opacity:.55;cursor:default}
+.pick.added:hover{border-color:var(--line)}
+.report{margin-top:22px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.paper{background:#fff;color:#1E1416;border:1px solid var(--line);border-radius:6px;padding:28px 30px;margin:6px 0 16px;max-height:520px;overflow:auto;font-size:.88rem;line-height:1.45}
+.paper .p-ch{color:#9E1B32;font-weight:700;margin:0}
+.paper .p-h{font-size:1.6rem;font-weight:800;margin:2px 0 0;line-height:1.1}
+.paper .p-t{color:#5A4E51;margin:2px 0 10px;padding-bottom:10px;border-bottom:2px solid #9E1B32}
+.paper h4{color:#6E0F22;font-size:1rem;margin:16px 0 6px}
+.paper h5{font-size:.92rem;margin:12px 0 4px}
+.paper table{width:100%;border-collapse:collapse;margin-bottom:6px}
+.paper th{background:#6E0F22;color:#fff;text-align:left;font-weight:700}
+.paper th,.paper td{border:1px solid #D9CFD1;padding:4px 8px}
+.paper td.r,.paper th.r{text-align:right;font-variant-numeric:tabular-nums}
+.paper .warn{color:#B4541A;font-weight:700}
+.paper .muted{color:#6B5E61}
+.paper .sig{display:flex;gap:24px;margin-top:22px}
+.paper .sig span{flex:1;border-top:1px solid #1E1416;padding-top:3px;font-weight:700}
+.paper .sig span + span{flex:.5;font-weight:400;color:#6B5E61}
+.guide-step{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:16px 0;border-top:1px solid var(--line)}
+.guide-step:first-of-type{border-top:0;padding-top:4px}
+.guide-num{font-family:var(--display);font-weight:900;font-size:2.2rem;line-height:1;color:var(--crimson)}
+.guide-step h3{font-size:1.1rem;margin:2px 0 4px}
+.guide-step ul,.guide-notes{margin:0;padding-left:18px}
+.guide-step li,.guide-notes li{margin-bottom:5px;max-width:68ch}
+.mast-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.docs-btn{background:rgba(255,246,230,.12);border:1px solid rgba(255,246,230,.35);color:var(--on-crimson);border-radius:8px;padding:6px 12px;font-weight:600;cursor:pointer;font-size:.9rem;white-space:nowrap}
+.docs-btn:hover{background:rgba(255,246,230,.22)}
+.k-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.docview{position:fixed;inset:0;z-index:70;background:var(--bg);color:var(--ink);overflow-y:auto;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}
+.docview[hidden]{display:none}
+.dv-bar{position:sticky;top:0;background:var(--crimson-deep);color:var(--on-crimson);padding:calc(env(safe-area-inset-top,0px) + 14px) 20px 14px;z-index:1}
+.dv-bar-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dv-bar h2{font-family:var(--display);font-weight:800;font-size:1.6rem;margin:0;flex:1 1 auto}
+.dv-seg{display:flex;background:rgba(255,246,230,.12);border-radius:8px;padding:3px}
+.dv-seg button{background:none;border:0;color:var(--on-crimson);padding:6px 14px;border-radius:6px;font-weight:600;cursor:pointer}
+.dv-seg button[aria-pressed="true"]{background:var(--on-crimson);color:var(--crimson-deep)}
+.dv-body{max-width:760px;margin:0 auto;padding:26px 20px}
+.dv-body h3{font-family:var(--display);font-weight:800;font-size:1.5rem;margin:30px 0 8px;color:var(--crimson)}
+.dv-body h3:first-of-type{margin-top:6px}
+.dv-body p{margin:0 0 10px;max-width:70ch}
+.dv-body ol{margin:-4px 0 14px;padding-left:30px;max-width:66ch}
+.dv-body li{margin-bottom:4px}
+.dv-sub{color:var(--muted);margin:0 0 6px}
+.blank{display:inline-block;min-width:140px;border-bottom:1px solid var(--muted)}
+.quals{margin:0;padding-left:20px}
+.quals li{margin-bottom:8px;max-width:70ch}
+.qual{margin:0 0 10px;font-size:.88rem;color:var(--muted)}
+.qual b{color:var(--ink)}
+.lock{margin-left:auto;background:rgba(255,246,230,.12);border:1px solid rgba(255,246,230,.35);color:var(--on-crimson);border-radius:8px;padding:6px 12px;font-weight:600;cursor:pointer}
+.lock:hover{background:rgba(255,246,230,.22)}
+.steps{margin:0;padding-left:22px}
+.steps li{margin-bottom:8px}
+#mdAlt{margin-right:auto}
+.dl-row .btn{display:inline-flex;align-items:center;gap:6px}
+.r-hint{font-size:.9rem;color:var(--muted);margin:10px 0 0;max-width:62ch}
+@media (max-width:560px){.grid2{grid-template-columns:1fr}.paper{padding:18px}}
+@media (max-width:680px){.k-office{grid-template-columns:1fr;gap:12px}}
+@media (max-width:560px){
+  .bar{grid-template-columns:1fr auto;}
+  .bar .track{grid-column:1 / -1;grid-row:2}
+}
+@media (prefers-reduced-motion: reduce){.bar .fill{transition:none}}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="mast-inner">
+    <div class="mast-top"><p class="chapter">Denton-Lewisville Kappa League</p><span class="k-actions"><button class="docs-btn" data-open-docs>Constitution &amp; Bylaws</button><button class="docs-btn" data-open-docs="instructions">Instructions</button></span></div>
+    <h1 class="title" id="mTitle">Officer Election</h1>
+    <div class="status-row">
+      <span class="pill" id="mStatus"><span class="dot"></span><span>Setting up</span></span>
+      <span id="mCount"></span>
+      <button class="lock" id="lockBtn">Lock and return to ballot</button>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="setup" aria-selected="true">Nomination</button>
+      <button class="tab" role="tab" data-tab="vote" aria-selected="false">Voting</button>
+      <button class="tab" role="tab" data-tab="results" aria-selected="false">Results</button>
+      <button class="tab" role="tab" data-tab="advisor" aria-selected="false">Advisor</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <p class="sync" id="sync">Connecting…</p>
+
+  <!-- NOMINATION -->
+  <div id="tab-setup">
+    <section class="block">
+      <h2>Election details</h2>
+      <div class="field">
+        <label for="fTitle">Election name</label>
+        <input type="text" id="fTitle" placeholder="2026–27 Officer Election">
+      </div>
+      <button class="btn primary" id="saveDetails">Save details</button>
+    </section>
+
+    <section class="block">
+      <h2>Qualifications for office</h2>
+      <p class="lede">From the Kappa League bylaws. Check each nominee against these before adding them to the ballot.</p>
+      <ul class="quals">
+        <li><b>President:</b> must be a member of the senior class while in office and must have served at least one previous year on the Board of Directors.</li>
+        <li><b>First Vice-President:</b> must be in the senior class while serving in office.</li>
+        <li><b>All other officers:</b> must be in at least the 10th grade while serving in office and have been a Kappa League member for at least six months.</li>
+        <li><b>Every office:</b> at least a “C” average with no failures, and acceptable deportment, cooperation, and work habits, as recorded on the last official report card.</li>
+      </ul>
+    </section>
+
+    <section class="block">
+      <h2>Offices &amp; nominees</h2>
+      <p class="lede">Choose offices from the Kappa League bylaws, then add the members nominated for each. Responsibilities show beside each office on the ballot.</p>
+      <div id="offices"></div>
+      <div class="row">
+        <button class="btn primary" id="addStandard">Choose offices</button>
+      </div>
+      <div id="picker" hidden></div>
+    </section>
+
+    <section class="block">
+      <h2>Voter roster</h2>
+      <p class="lede">Members check in by tapping their name, so each person votes once. Leave the roster empty to skip check-in.</p>
+      <div class="field">
+        <label for="fRoster">Add members</label>
+        <textarea id="fRoster" placeholder="One name per line"></textarea>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="addRoster">Add to roster</button>
+        <span class="hint" id="rosterCount" style="color:var(--muted);font-size:.9rem"></span>
+      </div>
+      <div class="roster" id="roster"></div>
+    </section>
+  </div>
+
+  <!-- VOTE CONTROL -->
+  <div id="tab-vote" hidden>
+    <section class="block">
+      <h2 id="vHead">Voting is closed</h2>
+      <p class="lede" id="vLede"></p>
+      <div class="row" id="vActions"></div>
+    </section>
+    <section class="block">
+      <h2>Start over</h2>
+      <p class="lede">Clears every ballot and check-in. Offices, candidates, and the roster stay.</p>
+      <button class="btn danger" id="resetVotes">Clear all votes</button>
+    </section>
+  </div>
+
+  <!-- ADVISOR -->
+  <div id="tab-advisor" hidden>
+    <section class="block">
+      <h2>Advisor access</h2>
+      <p class="lede">This page opens on the ballot for members. Advisors tap “Advisor sign in” at the top of the ballot and enter the PIN to reach nominations, voting controls, and results. Share the PIN only with advisors running the election.</p>
+      <div class="row">
+        <button class="btn primary" id="changePin">Change PIN</button>
+      </div>
+      <p class="r-hint">Forgot the PIN? The person who created this page, or anyone they’ve made an editor, sees “Reset PIN” on the sign-in screen.</p>
+    </section>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="tab-results" hidden>
+    <div class="stats" id="stats"></div>
+    <div id="results"></div>
+    <div class="row">
+      <button class="btn primary" id="openReport">Create report</button>
+      <button class="btn" id="copyResults">Copy results</button>
+    </div>
+    <section class="block report" id="report" hidden>
+      <h2>Results report</h2>
+      <p class="lede">A formal record of this election for the chapter files. Fill in the details, check the preview, then download.</p>
+      <div class="grid2">
+        <div class="field"><label for="rDate">Election date</label><input type="date" id="rDate"></div>
+        <div class="field"><label for="rBy">Prepared by</label><input type="text" id="rBy" placeholder="Name and office, e.g. Parliamentarian"></div>
+      </div>
+      <div class="field">
+        <label for="rNotes">Notes for the record</label>
+        <textarea id="rNotes" placeholder="Optional: motions, runoffs, or anything else to note"></textarea>
+      </div>
+      <div class="paper" id="rPreview" aria-label="Report preview"></div>
+      <div class="row dl-row">
+        <button class="btn primary" data-fmt="docx">Download Word (.docx)</button>
+        <button class="btn primary" data-fmt="pdf">Download PDF</button>
+        <button class="btn" data-fmt="gdoc">Download for Google Docs</button>
+      </div>
+      <p class="r-hint" id="rHint" hidden></p>
+    </section>
+  </div>
+</main>
+
+<!-- KIOSK -->
+<div class="kiosk" id="kiosk" hidden>
+  <div class="k-inner">
+    <div class="k-top">
+      <span id="kTitle">Kappa League Election</span>
+      <span class="k-actions"><button class="k-exit" data-open-docs>Constitution &amp; Bylaws</button><button class="k-exit" data-open-docs="instructions">Instructions</button><button class="k-exit" id="kExit">Advisor sign in</button></span>
+    </div>
+    <div id="kBody"></div>
+  </div>
+</div>
+
+<div class="docview" id="docview" hidden role="dialog" aria-modal="true" aria-labelledby="dvTitle">
+  <div class="dv-bar"><div class="dv-bar-inner">
+    <h2 id="dvTitle">Kappa League reference</h2>
+    <div class="dv-seg" role="group" aria-label="Choose a document">
+      <button data-doc="constitution" aria-pressed="true">Constitution</button>
+      <button data-doc="bylaws" aria-pressed="false">Bylaws</button>
+      <button data-doc="instructions" aria-pressed="false">Instructions</button>
+    </div>
+    <button class="docs-btn" id="dvClose">Close</button>
+  </div></div>
+
+  <div class="dv-body" id="dv-constitution">
+    <p class="dv-sub">Constitution of the Kappa Instructional Leadership League (Kappa League), sponsored by Kappa Alpha Psi Fraternity, Inc.</p>
+
+    <h3>Article I – Name</h3>
+    <p><b>Section 1.</b> The name of this organization shall be the Kappa Instructional Leadership League, to be called the Kappa League.</p>
+
+    <h3>Article II – Purpose</h3>
+    <p><b>Section 1.</b> The objectives of this organization shall be to promote and develop the leadership potential of its members through participation in club-oriented activities and, at the same time, motivate them to raise their aspiration level.</p>
+
+    <h3>Article III – Membership</h3>
+    <p><b>Section 1.</b> The organization’s membership shall consist of male students properly enrolled, who meet the specifications of the membership of the Kappa League.</p>
+    <p><b>Section 2.</b> All members shall be privileged to participate in all Kappa League activities and elections, except when said privilege is suspended by reason of the members’ failure to maintain the minimum requirements.</p>
+
+    <h3>Article IV – Officers</h3>
+    <p><b>Section 1.</b> The officers of the organization shall be a president, first vice-president, second vice-president, third vice-president, secretary, treasurer, and five directors of Area Phases.</p>
+    <p><b>Section 2.</b> A presidential vacancy shall be filled in order of succession, beginning with the first vice-president, the second vice-president, and finally, if necessary, a special Kappa League election.</p>
+    <p><b>Section 3.</b> These officers shall hold office for no more than one year.</p>
+    <p><b>Section 4.</b> The entire membership will elect all officers during elections held in May of each year.</p>
+    <p><b>Section 5.</b> The qualifications and duties for each office are to be determined by the Kappa League members’ Bylaws as approved by the Kappa League members.</p>
+    <p><b>Section 6.</b> No officer may hold more than one seat in the Kappa League for the duration of one year.</p>
+
+    <h3>Article V – Executive and Legislative Powers</h3>
+    <p><b>Section 1.</b> The legislative powers shall be vested in the Board of Directors.</p>
+    <p><b>Section 2.</b> The Board of Directors, consisting of the officers listed in Article IV, shall meet regularly and, by majority vote, shall pass Kappa League programs and projects to be carried out by the Kappa League. By majority vote, the Board of Directors shall recommend proposed laws and regulations for that purpose.</p>
+
+    <h3>Article VI – Amendments</h3>
+    <p><b>Section 1.</b> Either the Kappa League membership or the Board of Directors may draft proposed amendments to this Constitution.</p>
+    <p><b>Section 2.</b> Upon the arrival of most members of the Kappa League Board of Directors, the proposed amendment must be approved by a 2/3 vote cast by the Kappa League membership in a special Kappa League meeting called expressly for that purpose.</p>
+
+    <h3>Article VII – Bylaws</h3>
+    <p><b>Section 1.</b> The membership, by majority vote, shall determine the Bylaws of the Kappa League, which must not conflict with the content of the Constitution of the Kappa League.</p>
+
+    <h3>Article VIII – Ratification</h3>
+    <p><b>Section 1.</b> The Constitution shall take effect when a 2/3 vote cast by the Kappa League membership ratifies it.</p>
+
+    <h3>Article IX – Sponsorship</h3>
+    <p><b>Section 1.</b> The Kappa Alpha Psi Fraternity, Inc., sponsors the Kappa League.</p>
+    <p><b>Section 2.</b> The Kappa League shall engage in no programs or projects unless approved by the Fraternity appointed advisors.</p>
+    <p><b>Section 3.</b> Without the fraternity-appointed advisors’ written approval, the Kappa League shall make no expenditure.</p>
+  </div>
+
+  <div class="dv-body" id="dv-bylaws" hidden>
+    <p class="dv-sub">Bylaws of the Kappa League.</p>
+
+    <h3>Article I – Duties of Officers</h3>
+    <p><b>Section 1.</b> The President shall:</p>
+    <ol type="a"><li>Act as the chief executive officer of the Kappa League.</li><li>Preside as a nonvoting member at all Board of Directors and General Membership meetings.</li><li>Be an ex-officio member of all committees of the Kappa League.</li><li>Be empowered to appoint any special committees for the general welfare of the Kappa League.</li></ol>
+    <p><b>Section 2.</b> The First Vice-President shall:</p>
+    <ol type="a"><li>Be in charge of programs and projects.</li><li>Be an ex-officio member of all committees of (a) immediately above.</li><li>Be an assistant to the President for all executive tasks.</li></ol>
+    <p><b>Section 3.</b> The Second Vice-President shall:</p>
+    <ol type="a"><li>Be in charge of the following areas of responsibility: Parliamentarian, Sergeant-at-Arms, Constitution, Bylaws, Historian, and Public Relations.</li><li>Be an ex-officio member of all committees of (a) immediately above.</li><li>Be an assistant to the President for all executive tasks.</li></ol>
+    <p><b>Section 4.</b> The Third Vice-President shall:</p>
+    <ol type="a"><li>Be in charge of membership recruitment and activation.</li><li>Be an ex-officio member of all committees of (a) immediately above.</li><li>Be an assistant to the President for all executive tasks.</li></ol>
+    <p><b>Section 5.</b> The Secretary shall:</p>
+    <ol type="a"><li>Keep minutes of all Board of Directors and General Membership meetings.</li><li>Maintain a book of records containing the minutes listed in (a) immediately above.</li><li>Handle all correspondence for the Kappa League.</li><li>Be assisted by a corresponding and recording secretary whose duties shall be assigned by the Secretary and will have the power to appoint members to this position.</li></ol>
+    <p><b>Section 6.</b> The Treasurer shall:</p>
+    <ol type="a"><li>Be chairman of the Ways and Means Committee.</li><li>Collect and record all dues and assessments.</li><li>Be an ex-officio member of all fund-raising committees.</li><li>Be assisted by a collection and recording Treasurer whose duties and appointments shall be made by the Treasurer.</li></ol>
+    <p><b>Section 7.</b> The Historian shall:</p>
+    <ol type="a"><li>Record all activities of historical interest in the Kappa League scrapbook.</li><li>Maintain the Kappa League archives.</li></ol>
+    <p><b>Section 8.</b> The Director of Public Relations shall:</p>
+    <ol type="a"><li>Direct the Community Contact Committee of the Kappa League.</li><li>Arrange the publicity for all Kappa League events.</li><li>Direct the artwork and photography as it relates to publicity.</li><li>Be in charge of the Kappa League bulletin board and/or showcase.</li></ol>
+    <p><b>Section 9.</b> The Parliamentarian shall:</p>
+    <ol type="a"><li>Make all decisions in parliamentary procedure.</li><li>Direct all Kappa League elections.</li></ol>
+
+    <h3>Article II – Qualifications for Office</h3>
+    <p><b>Section 1.</b> The Kappa League President must be a senior class member when in office and must have served at least one previous year on the Board of Directors.</p>
+    <p><b>Section 2.</b> The First Vice-President must be in the senior class when serving in office.</p>
+    <p><b>Section 3.</b> All other officers must be in at least the 10th grade when serving in office and have been a Kappa League member for at least six months.</p>
+    <p><b>Section 4.</b> To be eligible for any Kappa League office, members must have at least a “C” average with no “Failures,” acceptable deportment, cooperation, and work habits as recorded on the last official report card.</p>
+
+    <h3>Article III – Meetings</h3>
+    <p><b>Section 1.</b> The Board of Directors will meet before each General Membership meeting. All committee chairmen proposing to make a report at the General Membership meeting must submit their report to the Board. Any Kappa League member is entitled to attend the Board meeting.</p>
+    <p><b>Section 2.</b> The General Membership meetings will be held twice a month. One-third of the membership constitutes a quorum to hold a meeting.</p>
+    <p><b>Section 3.</b> All meetings will be held at <span class="blank" aria-label="blank"></span>.</p>
+
+    <h3>Article IV – Participation Requirements</h3>
+    <p><b>Section 1.</b> Minimum requirements for the privilege to participate in Kappa League activities and programs:</p>
+    <ol type="a"><li>Officers are required to attend each called meeting except when excused by the Kappa Advisor in advance of the time of said called meeting.</li><li>New members must attend three (3) General Membership meetings in succession to be eligible for a Membership card.</li><li>Any member absent from General Membership meetings for two successive General Membership meetings shall lose his voting rights.</li><li>Any member absent from General Membership meetings for three successive General Membership meetings shall lose his privilege to attend all Kappa League activities. Such members shall be reinstated only after having applied to the Board of Directors and said application approved by the Board.</li><li>Officers shall be excused from not more than two (2) Board of Directors meetings and one (1) General Membership meeting during his term of office.</li></ol>
+    <p><b>Section 2.</b> Dues</p>
+    <ol type="a"><li>Dues shall be <span class="blank" aria-label="blank"></span> per General Membership meeting. Members becoming delinquent in dues shall become subject to Article IV, Section 1, d, above.</li></ol>
+  </div>
+
+  <div class="dv-body" id="dv-instructions" hidden>
+    <section class="block">
+      <h2>How it works</h2>
+      <p class="lede">Follow these steps to run a Kappa League election from start to finish.</p>
+
+      <div class="guide-step"><span class="guide-num">1</span><div>
+        <h3>Sign in as the advisor</h3>
+        <ul>
+          <li>The page opens on the members’ ballot. Tap “Advisor sign in” at the top.</li>
+          <li>The first time, create a 4 to 8 digit PIN. Share it only with advisors.</li>
+          <li>After that, enter the PIN to reach the advisor tabs.</li>
+        </ul>
+      </div></div>
+
+      <div class="guide-step"><span class="guide-num">2</span><div>
+        <h3>Set up nominations</h3>
+        <ul>
+          <li>Go to Nomination and type the election name, then tap “Save details.”</li>
+          <li>Review the qualifications for office before accepting any nominee.</li>
+          <li>Tap “Choose offices,” check the offices on this year’s ballot, and tap “Add selected offices.”</li>
+          <li>Under each office, add each nominee’s name and grade.</li>
+          <li>Paste the voter roster, one member per line, and tap “Add to roster.”</li>
+        </ul>
+      </div></div>
+
+      <div class="guide-step"><span class="guide-num">3</span><div>
+        <h3>Open voting</h3>
+        <ul>
+          <li>Go to Voting and tap “Open voting.”</li>
+          <li>Tap “Open ballot screen.” This locks the advisor area so members can’t see results.</li>
+          <li>Hand the device to the first member.</li>
+        </ul>
+      </div></div>
+
+      <div class="guide-step"><span class="guide-num">4</span><div>
+        <h3>Members vote</h3>
+        <ul>
+          <li>Each member taps their name. Names of members who already voted are greyed out.</li>
+          <li>They read each office’s responsibilities and choose one nominee, or “No vote.”</li>
+          <li>They review their choices and tap “Cast my ballot.”</li>
+          <li>They pass the device to the next member. The screen resets on its own.</li>
+        </ul>
+      </div></div>
+
+      <div class="guide-step"><span class="guide-num">5</span><div>
+        <h3>Close voting and check results</h3>
+        <ul>
+          <li>When everyone has voted, sign back in with the PIN.</li>
+          <li>Go to Voting and tap “Close voting.”</li>
+          <li>Go to Results to see the winner of each office. Ties are flagged for a runoff.</li>
+        </ul>
+      </div></div>
+
+      <div class="guide-step"><span class="guide-num">6</span><div>
+        <h3>Create the report for the records</h3>
+        <ul>
+          <li>On Results, tap “Create report.”</li>
+          <li>Add the election date, who prepared it, and any notes.</li>
+          <li>Download it as Word, PDF, or for Google Docs.</li>
+          <li>Print it, have the Parliamentarian and Chapter Advisor sign it, and file it.</li>
+        </ul>
+      </div></div>
+    </section>
+
+    <section class="block">
+      <h2>Good to know</h2>
+      <ul class="guide-notes">
+        <li>Ballots are anonymous. The app records who voted, but not how they voted.</li>
+        <li>Tap “Lock and return to ballot” any time you step away from the device.</li>
+        <li>To start over, use “Clear all votes” on the Voting tab. Offices, nominees, and the roster stay.</li>
+        <li>Forgot the PIN? The person who created this page can reset it from the sign-in screen.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="mdH">
+    <h3 id="mdH"></h3>
+    <p id="mdP"></p>
+    <input type="password" id="mdIn" inputmode="numeric" hidden>
+    <div class="row">
+      <button class="btn ghost" id="mdAlt" hidden></button>
+      <button class="btn ghost" id="mdNo">Cancel</button>
+      <button class="btn primary" id="mdYes">OK</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid = () => Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4);
+
+const DEFAULT_CONFIG = { title:"", pin:"", status:"setup", offices:[], roster:[] };
+const S = { config: {...DEFAULT_CONFIG}, ballots: [], checkins: {}, ready:false };
+
+/* ---------- Storage: shared db, with a this-device fallback ---------- */
+const LS_KEY = "dlkl-election-v1";
+const local = {
+  read(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }catch(e){ return {}; } },
+  write(o){ try{ localStorage.setItem(LS_KEY, JSON.stringify(o)); }catch(e){} }
+};
+const Store = {
+  db:null,
+  async init(){
+    let db = null;
+    try{ db = window.claude && window.claude.use ? await window.claude.use("db") : null; }catch(e){ db = null; }
+    if(db){
+      this.db = db;
+      setSync("Saved online — any device that opens this page sees the same election.");
+      db.doc("election/config").onSnapshot(s => {
+        S.config = Object.assign({...DEFAULT_CONFIG}, s.exists ? s.data() : {});
+        S.ready = true; render();
+      }, onDbErr);
+      db.collection("ballots").onSnapshot(s => { S.ballots = s.docs.map(d => d.data()); render(); }, onDbErr);
+      db.collection("checkins").onSnapshot(s => {
+        const m = {}; s.docs.forEach(d => m[d.id] = true); S.checkins = m; render();
+      }, onDbErr);
+    } else {
+      setSync("Saved on this device only.");
+      const o = local.read();
+      S.config = Object.assign({...DEFAULT_CONFIG}, o.config || {});
+      S.ballots = o.ballots || []; S.checkins = o.checkins || {};
+      S.ready = true; render();
+    }
+  },
+  persistLocal(){ local.write({config:S.config, ballots:S.ballots, checkins:S.checkins}); },
+  async saveConfig(patch){
+    const next = JSON.parse(JSON.stringify(Object.assign({}, S.config, patch)));
+    S.config = next; render();
+    if(this.db){ await this.db.doc("election/config").set(next); } else { this.persistLocal(); }
+  },
+  async hasVoted(memberId){
+    if(this.db){ const s = await this.db.doc("checkins/" + memberId).get(); return s.exists; }
+    return !!S.checkins[memberId];
+  },
+  async cast(memberId, choices){
+    const ballot = { choices, at: new Date().toISOString() };
+    if(this.db){
+      if(memberId) await this.db.doc("checkins/" + memberId).set({ at: ballot.at });
+      await this.db.collection("ballots").doc(uid()).set(ballot);
+    } else {
+      if(memberId) S.checkins[memberId] = true;
+      S.ballots.push(ballot); this.persistLocal(); render();
+    }
+  },
+  async clearVotes(){
+    if(this.db){
+      const [b, c] = await Promise.all([this.db.collection("ballots").get(), this.db.collection("checkins").get()]);
+      for(const d of b.docs) await this.db.doc("ballots/" + d.id).delete();
+      for(const d of c.docs) await this.db.doc("checkins/" + d.id).delete();
+    } else { S.ballots = []; S.checkins = {}; this.persistLocal(); render(); }
+  }
+};
+function onDbErr(e){
+  if(e && e.code === "revoked"){ setSync("This page lost access to the shared election."); }
+  else if(e && e.code === "unavailable"){ setSync("Reconnecting…"); }
+}
+function setSync(t){ $("#sync").textContent = t; }
+
+/* ---------- Helpers ---------- */
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(()=> t.hidden = true, 2600); }
+function ask({title, text, okLabel="OK", input=false, alt=""}){
+  return new Promise(res => {
+    $("#mdH").textContent = title; $("#mdP").textContent = text || "";
+    const inp = $("#mdIn"); inp.hidden = !input; inp.value = "";
+    $("#mdYes").textContent = okLabel; $("#modal").hidden = false;
+    const altB = $("#mdAlt"); altB.hidden = !alt; altB.textContent = alt;
+    (input ? inp : $("#mdYes")).focus();
+    const done = v => { $("#modal").hidden = true; $("#mdYes").onclick = $("#mdNo").onclick = altB.onclick = inp.onkeydown = null; res(v); };
+    altB.onclick = () => done("__alt");
+    $("#mdYes").onclick = () => done(input ? inp.value : true);
+    $("#mdNo").onclick = () => done(input ? null : false);
+    inp.onkeydown = e => { if(e.key === "Enter") done(inp.value); };
+  });
+}
+async function guard(fn){
+  try{ await fn(); }
+  catch(e){
+    const c = e && e.code;
+    if(c === "invalid_argument") toast("You don’t have permission to change this election.");
+    else if(c === "quota_exceeded") toast("Storage is full. Clear old votes to continue.");
+    else toast("That didn’t save. Check your connection and try again.");
+  }
+}
+
+function tally(){
+  const out = {};
+  for(const o of S.config.offices){
+    const counts = {}; o.candidates.forEach(c => counts[c.id] = 0);
+    let abstain = 0, other = 0;
+    for(const b of S.ballots){
+      const v = b.choices && b.choices[o.id];
+      if(v === undefined) continue;
+      if(v === "__abstain") abstain++;
+      else if(v in counts) counts[v]++;
+      else other++;
+    }
+    const rows = o.candidates.map(c => ({...c, n: counts[c.id]})).sort((a,b) => b.n - a.n);
+    const top = rows.length ? rows[0].n : 0;
+    const leaders = rows.filter(r => r.n === top && top > 0);
+    out[o.id] = { rows, abstain, other, total: rows.reduce((s,r)=>s+r.n,0), leaders };
+  }
+  return out;
+}
+
+/* ---------- Render ---------- */
+let tab = "setup";
+function render(){
+  if(!S.ready) return;
+  const c = S.config;
+  $("#mTitle").textContent = c.title || "Officer Election";
+  $("#kTitle").textContent = c.title || "Kappa League Election";
+  const st = $("#mStatus");
+  st.className = "pill" + (c.status === "open" ? " open" : "");
+  st.lastElementChild.textContent = c.status === "open" ? "Voting open" : c.status === "closed" ? "Voting closed" : "Setting up";
+  const nb = S.ballots.length;
+  $("#mCount").textContent = nb + (nb === 1 ? " ballot cast" : " ballots cast") + (c.roster.length ? " of " + c.roster.length + " members" : "");
+  if(document.activeElement !== $("#fTitle")) $("#fTitle").value = c.title || "";
+  if(!render._kInit){ render._kInit = true; kioskReset(); }
+  renderOffices(); renderPicker(); renderRoster(); renderVote(); renderResults(); renderReport();
+  if(!$("#kiosk").hidden) renderKiosk(false);
+}
+
+function renderOffices(){
+  const wrap = $("#offices");
+  if(!S.config.offices.length){ wrap.innerHTML = '<p class="empty">No offices yet. Choose them from the bylaws below.</p>'; return; }
+  wrap.innerHTML = S.config.offices.map((o, i) => `
+    <div class="office" data-oid="${o.id}">
+      <div class="office-head">
+        <h3 style="flex:1">${esc(o.name)}</h3>
+        <button class="x o-up" title="Move up" aria-label="Move ${esc(o.name)} up" ${i===0?"disabled":""}>↑</button>
+        <button class="x o-del" title="Remove office" aria-label="Remove ${esc(o.name)}">×</button>
+      </div>
+      <p class="qual"><b>Qualifications:</b> ${esc(qualFor(o.name))} Plus at least a “C” average with no failures and acceptable conduct on the last report card.</p>
+      <textarea class="duties-edit o-duties" aria-label="Responsibilities for ${esc(o.name)}" placeholder="Responsibilities, one per line (shown on the ballot)">${esc((o.duties || []).join("\n"))}</textarea>
+      ${o.candidates.length ? o.candidates.map(cd => `
+        <div class="cand" data-cid="${cd.id}">
+          <span class="name">${esc(cd.name)} ${cd.note ? `<span class="meta">${esc(cd.note)}</span>` : ""}</span>
+          <button class="x c-del" aria-label="Remove ${esc(cd.name)}">×</button>
+        </div>`).join("") : '<p class="empty">No nominees yet.</p>'}
+      <div class="row" style="margin-top:10px">
+        <input type="text" class="c-name" placeholder="Nominee name">
+        <input type="text" class="c-note" placeholder="Grade or school (optional)">
+        <button class="btn c-add">Add nominee</button>
+      </div>
+    </div>`).join("");
+}
+
+function renderRoster(){
+  const r = S.config.roster;
+  $("#rosterCount").textContent = r.length ? r.length + " members · " + Object.keys(S.checkins).length + " voted" : "";
+  $("#roster").innerHTML = r.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(m => `
+    <span class="chip ${S.checkins[m.id] ? "voted" : ""}" data-mid="${m.id}">
+      ${S.checkins[m.id] ? '<span class="tick" aria-label="voted">✓</span>' : ""}${esc(m.name)}
+      <button class="x m-del" aria-label="Remove ${esc(m.name)}">×</button>
+    </span>`).join("");
+}
+
+function ballotReady(){
+  const offices = S.config.offices.filter(o => o.candidates.length);
+  return offices.length > 0;
+}
+
+function renderVote(){
+  const c = S.config, a = $("#vActions");
+  if(c.status === "open"){
+    $("#vHead").textContent = "Voting is open";
+    $("#vLede").textContent = "Open the ballot screen on this device and hand it to each member in turn. Members on other devices can open this page and do the same.";
+    a.innerHTML = '<button class="btn primary big" id="openKiosk">Open ballot screen</button><button class="btn" id="closeVoting">Close voting</button>';
+  } else if(c.status === "closed"){
+    $("#vHead").textContent = "Voting is closed";
+    $("#vLede").textContent = "Results are final unless you reopen voting.";
+    a.innerHTML = '<button class="btn" id="openVoting">Reopen voting</button>';
+  } else {
+    $("#vHead").textContent = "Ready to start?";
+    $("#vLede").textContent = ballotReady() ? "Opening voting lets members start casting ballots." : "Add at least one office with candidates first.";
+    a.innerHTML = `<button class="btn primary big" id="openVoting" ${ballotReady() ? "" : "disabled"}>Open voting</button>`;
+  }
+}
+
+function renderResults(){
+  const t = tally(), c = S.config;
+  const closed = c.status === "closed";
+  const turnout = c.roster.length ? Math.round(Object.keys(S.checkins).length / c.roster.length * 100) + "%" : "—";
+  $("#stats").innerHTML = `
+    <div class="stat"><b>${S.ballots.length}</b><span>Ballots cast</span></div>
+    <div class="stat"><b>${c.roster.length || "—"}</b><span>Members on roster</span></div>
+    <div class="stat"><b>${turnout}</b><span>Turnout</span></div>`;
+  if(!c.offices.length){ $("#results").innerHTML = '<p class="empty">Add offices in Setup to see results here.</p>'; return; }
+  $("#results").innerHTML = c.offices.map(o => {
+    const r = t[o.id]; const max = Math.max(1, ...r.rows.map(x => x.n));
+    const tie = r.leaders.length > 1;
+    return `<div class="res-office"><h3>${esc(o.name)}</h3>
+      ${r.rows.length ? r.rows.map(x => {
+        const lead = r.leaders.some(l => l.id === x.id);
+        const pct = r.total ? Math.round(x.n / r.total * 100) : 0;
+        const badge = lead ? (tie ? '<span class="badge tie">Tied</span>' : `<span class="badge">${closed ? "Winner" : "Leading"}</span>`) : "";
+        return `<div class="bar ${lead && !tie ? "lead" : ""}">
+          <span class="who">${esc(x.name)}${badge}</span>
+          <span class="track"><span class="fill" style="width:${x.n / max * 100}%"></span></span>
+          <span class="n">${x.n} <small>${pct}%</small></span></div>`;
+      }).join("") : '<p class="empty">No candidates.</p>'}
+      ${r.abstain ? `<p class="empty">${r.abstain} abstained</p>` : ""}
+      ${r.other ? `<p class="empty">${r.other} votes for a removed candidate</p>` : ""}
+    </div>`;
+  }).join("");
+}
+
+/* ---------- Kiosk ---------- */
+const K = { step:"who", member:null, picks:{}, q:"", err:"" };
+function kioskReset(){ K.step = S.config.roster.length ? "who" : "ballot"; K.member = null; K.picks = {}; K.q = ""; K.err = ""; }
+function openKiosk(){ admin = false; $("#modal").hidden = true; kioskReset(); $("#kiosk").hidden = false; document.body.style.overflow = "hidden"; renderKiosk(true); }
+function closeKiosk(){ $("#kiosk").hidden = true; document.body.style.overflow = ""; }
+
+function renderKiosk(focus){
+  const body = $("#kBody"), c = S.config;
+  const keepScroll = $("#kiosk").scrollTop;
+  if(!S.ready){ body.innerHTML = '<p class="k-p">Loading the ballot…</p>'; return; }
+  if(c.status === "setup" && K.step !== "done"){
+    body.innerHTML = '<h2 class="k-h">Voting hasn’t opened yet</h2><p class="k-p">Your advisor will open the ballot when it’s time to vote. Check back then.</p>';
+    return;
+  }
+  if(c.status !== "open" && K.step !== "done"){
+    body.innerHTML = '<h2 class="k-h">Voting is closed</h2><p class="k-p">Thanks for being here. Results will be shared by your advisor.</p>';
+    return;
+  }
+  if(K.step === "who"){
+    const q = K.q.toLowerCase();
+    const list = c.roster.slice().sort((a,b)=>a.name.localeCompare(b.name)).filter(m => m.name.toLowerCase().includes(q));
+    body.innerHTML = `
+      <h2 class="k-h">Find your name</h2>
+      <p class="k-p">Tap your name to get your ballot. Your choices stay private.</p>
+      ${K.err ? `<p class="k-err" role="alert">${esc(K.err)}</p>` : ""}
+      <input class="k-search" id="kQ" type="text" placeholder="Start typing your name" value="${esc(K.q)}" aria-label="Search your name">
+      <div class="k-names">${list.map(m => `<button class="k-name" data-mid="${m.id}" ${S.checkins[m.id] ? "disabled" : ""}>${esc(m.name)}${S.checkins[m.id] ? " · voted" : ""}</button>`).join("") || '<p class="k-p">No match. Ask your advisor to add you.</p>'}</div>`;
+    const inp = $("#kQ");
+    if(focus || document.activeElement === document.body){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+    return;
+  }
+  if(K.step === "ballot"){
+    const offices = c.offices.filter(o => o.candidates.length);
+    const complete = offices.every(o => K.picks[o.id]);
+    body.innerHTML = `
+      <h2 class="k-h">${K.member ? "Hi, " + esc(K.member.name.split(" ")[0]) : "Your ballot"}</h2>
+      <p class="k-p">Choose one per office. Pick “No vote” to skip an office.</p>
+      ${offices.map(o => `
+        <div class="k-office">
+          <div class="k-duties">
+            <h3>${esc(o.name)}</h3>
+            ${o.duties && o.duties.length ? `<ul>${o.duties.map(d => `<li>${esc(d)}</li>`).join("")}</ul>` : ""}
+          </div>
+          <div class="k-choices" role="radiogroup" aria-label="${esc(o.name)}">
+          ${o.candidates.map(cd => `
+            <button class="choice" role="radio" aria-checked="${K.picks[o.id]===cd.id}" data-oid="${o.id}" data-cid="${cd.id}">
+              <span class="ring"></span><span>${esc(cd.name)}${cd.note ? `<span class="cmeta">${esc(cd.note)}</span>` : ""}</span>
+            </button>`).join("")}
+          <button class="choice abstain" role="radio" aria-checked="${K.picks[o.id]==="__abstain"}" data-oid="${o.id}" data-cid="__abstain">
+            <span class="ring"></span><span>No vote for this office</span>
+          </button>
+          </div>
+        </div>`).join("")}
+      <div class="k-submit">
+        <button class="k-btn" id="kReview" ${complete ? "" : "disabled"}>${complete ? "Review my ballot" : "Make a choice for every office"}</button>
+        ${K.member ? '<button class="k-btn alt" id="kBack">Not you? Go back</button>' : ""}
+      </div>`;
+    $("#kiosk").scrollTop = keepScroll;
+    return;
+  }
+  if(K.step === "review"){
+    const offices = c.offices.filter(o => o.candidates.length);
+    body.innerHTML = `
+      <h2 class="k-h">Check your choices</h2>
+      <p class="k-p">Once you cast your ballot, it can’t be changed.</p>
+      ${K.err ? `<p class="k-err" role="alert">${esc(K.err)}</p>` : ""}
+      <ul class="k-review">${offices.map(o => {
+        const p = K.picks[o.id]; const cd = o.candidates.find(x => x.id === p);
+        return `<li><strong>${esc(o.name)}:</strong> ${cd ? esc(cd.name) : "No vote"}</li>`;
+      }).join("")}</ul>
+      <button class="k-btn" id="kCast">Cast my ballot</button>
+      <button class="k-btn alt" id="kEdit">Change my choices</button>`;
+    $("#kiosk").scrollTop = 0;
+    return;
+  }
+  if(K.step === "done"){
+    body.innerHTML = `<div class="k-done">
+      <h2 class="k-h">Ballot cast.</h2>
+      <p class="k-p">Thank you${K.member ? ", " + esc(K.member.name.split(" ")[0]) : ""}. Please pass the device to the next member.</p>
+      <button class="k-btn" id="kNext" style="max-width:360px">Next voter</button></div>`;
+    $("#kNext").focus();
+  }
+}
+
+$("#kiosk").addEventListener("click", async e => {
+  const t = e.target.closest("button"); if(!t) return;
+  if(t.id === "kExit"){ advisorSignIn(); return; }
+  if(t.classList.contains("k-name")){
+    const m = S.config.roster.find(x => x.id === t.dataset.mid); if(!m) return;
+    try{ if(await Store.hasVoted(m.id)){ K.err = m.name + " has already voted."; renderKiosk(); return; } }catch(_){}
+    K.member = m; K.err = ""; K.step = "ballot"; $("#kiosk").scrollTop = 0; renderKiosk(); return;
+  }
+  if(t.classList.contains("choice")){ K.picks[t.dataset.oid] = t.dataset.cid; renderKiosk(); return; }
+  if(t.id === "kBack"){ kioskReset(); renderKiosk(true); return; }
+  if(t.id === "kReview"){ K.step = "review"; K.err = ""; renderKiosk(); return; }
+  if(t.id === "kEdit"){ K.step = "ballot"; renderKiosk(); return; }
+  if(t.id === "kCast"){
+    t.disabled = true; t.textContent = "Casting…";
+    try{
+      if(K.member && await Store.hasVoted(K.member.id)){ K.err = "This member has already voted."; K.step = "review"; renderKiosk(); return; }
+      await Store.cast(K.member ? K.member.id : null, {...K.picks});
+      K.step = "done"; renderKiosk();
+      clearTimeout(K._t); K._t = setTimeout(() => { if(K.step === "done"){ kioskReset(); renderKiosk(true); } }, 8000);
+    }catch(err){
+      K.err = err && err.code === "invalid_argument" ? "This device can’t record votes. Ask your advisor." : "Your ballot didn’t go through. Tap Cast again.";
+      renderKiosk();
+    }
+    return;
+  }
+  if(t.id === "kNext"){ clearTimeout(K._t); kioskReset(); renderKiosk(true); }
+});
+$("#kiosk").addEventListener("input", e => { if(e.target.id === "kQ"){ K.q = e.target.value; K.err = ""; renderKiosk(); } });
+
+/* ---------- Setup events ---------- */
+document.querySelector(".tabs").addEventListener("click", e => {
+  const b = e.target.closest(".tab"); if(!b) return;
+  tab = b.dataset.tab;
+  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x === b));
+  ["setup","vote","results","advisor"].forEach(n => $("#tab-" + n).hidden = n !== tab);
+});
+
+$("#saveDetails").onclick = () => guard(async () => {
+  await Store.saveConfig({ title: $("#fTitle").value.trim() });
+  toast("Details saved");
+});
+
+function addOffice(name){
+  name = name.trim(); if(!name) return null;
+  return { id: uid(), name, candidates: [] };
+}
+function qualFor(name){
+  const n = String(name || "").trim().toLowerCase();
+  if(n === "president") return "Must be a senior while in office and have served at least one previous year on the Board of Directors.";
+  if(n === "first vice-president") return "Must be a senior while in office.";
+  return "Must be in at least 10th grade while in office and a Kappa League member for at least six months.";
+}
+const BYLAWS = [
+  { name:"President", duties:[
+    "Acts as the chief executive officer of the Kappa League.",
+    "Presides as a nonvoting member at all Board of Directors and General Membership meetings.",
+    "Serves as an ex-officio member of all Kappa League committees.",
+    "May appoint special committees for the general welfare of the Kappa League."]},
+  { name:"First Vice-President", duties:[
+    "In charge of programs and projects.",
+    "Ex-officio member of all program and project committees.",
+    "Assists the President with all executive tasks."]},
+  { name:"Second Vice-President", duties:[
+    "Oversees the Parliamentarian, Sergeant-at-Arms, Constitution, Bylaws, Historian, and Public Relations.",
+    "Ex-officio member of all committees in those areas.",
+    "Assists the President with all executive tasks."]},
+  { name:"Third Vice-President", duties:[
+    "In charge of membership recruitment and activation.",
+    "Ex-officio member of all recruitment and activation committees.",
+    "Assists the President with all executive tasks."]},
+  { name:"Secretary", duties:[
+    "Keeps minutes of all Board of Directors and General Membership meetings.",
+    "Maintains the book of records containing those minutes.",
+    "Handles all correspondence for the Kappa League.",
+    "Is assisted by a corresponding and recording secretary whom the Secretary appoints and assigns duties."]},
+  { name:"Treasurer", duties:[
+    "Chairs the Ways and Means Committee.",
+    "Collects and records all dues and assessments.",
+    "Ex-officio member of all fund-raising committees.",
+    "Is assisted by a collection and recording Treasurer whom the Treasurer appoints and assigns duties."]},
+  { name:"Historian", duties:[
+    "Records all activities of historical interest in the Kappa League scrapbook.",
+    "Maintains the Kappa League archives."]},
+  { name:"Director of Public Relations", duties:[
+    "Directs the Community Contact Committee.",
+    "Arranges publicity for all Kappa League events.",
+    "Directs artwork and photography for publicity.",
+    "In charge of the Kappa League bulletin board and/or showcase."]},
+  { name:"Parliamentarian", duties:[
+    "Makes all decisions in parliamentary procedure.",
+    "Directs all Kappa League elections."]}
+];
+const picked = new Set();
+function officeByName(n){ return S.config.offices.find(o => o.name.trim().toLowerCase() === n.toLowerCase()); }
+function renderPicker(){
+  const p = $("#picker"); if(p.hidden) return;
+  p.innerHTML = `<div class="picker">${BYLAWS.map((b, i) => {
+    const ex = officeByName(b.name); const done = ex && ex.duties && ex.duties.length;
+    const note = done ? "On the ballot" : ex ? "On the ballot — adds responsibilities" : "";
+    return `<label class="pick ${done ? "added" : ""}">
+      <input type="checkbox" value="${i}" ${done ? "checked disabled" : picked.has(i) ? "checked" : ""}>
+      <span><b>${esc(b.name)} ${note ? `<span class="note">· ${note}</span>` : ""}</b>
+      <ul class="duties">${b.duties.map(d => `<li>${esc(d)}</li>`).join("")}</ul></span></label>`;
+  }).join("")}</div>
+  <div class="row"><button class="btn primary" id="pickAdd">Add selected offices</button>
+  <button class="btn ghost" id="pickClose">Close</button></div>`;
+}
+$("#addStandard").onclick = () => { const p = $("#picker"); p.hidden = !p.hidden; picked.clear(); renderPicker(); };
+$("#picker").addEventListener("change", e => {
+  if(e.target.type !== "checkbox") return;
+  const i = +e.target.value; e.target.checked ? picked.add(i) : picked.delete(i);
+});
+$("#picker").addEventListener("click", e => {
+  const t = e.target.closest("button"); if(!t) return;
+  if(t.id === "pickClose"){ $("#picker").hidden = true; return; }
+  if(t.id === "pickAdd") guard(async () => {
+    if(!picked.size){ toast("Select at least one office"); return; }
+    const offices = JSON.parse(JSON.stringify(S.config.offices)); let n = 0;
+    [...picked].sort((a, b) => a - b).forEach(i => {
+      const b = BYLAWS[i];
+      const ex = offices.find(o => o.name.trim().toLowerCase() === b.name.toLowerCase());
+      if(ex){ if(!ex.duties || !ex.duties.length){ ex.duties = [...b.duties]; n++; } }
+      else { offices.push({ id: uid(), name: b.name, duties: [...b.duties], candidates: [] }); n++; }
+    });
+    await Store.saveConfig({ offices });
+    picked.clear(); $("#picker").hidden = true;
+    toast(n === 1 ? "Office added" : n + " offices added");
+  });
+});
+
+$("#offices").addEventListener("click", e => {
+  const t = e.target.closest("button"); if(!t) return;
+  const card = t.closest(".office"); const oid = card.dataset.oid;
+  const offices = JSON.parse(JSON.stringify(S.config.offices));
+  const i = offices.findIndex(o => o.id === oid); if(i < 0) return;
+  if(t.classList.contains("o-del")){
+    guard(async () => {
+      const ok = await ask({title:"Remove " + offices[i].name + "?", text:"Its candidates come off the ballot too.", okLabel:"Remove"});
+      if(!ok) return; offices.splice(i,1); await Store.saveConfig({ offices });
+    });
+  } else if(t.classList.contains("o-up") && i > 0){
+    [offices[i-1], offices[i]] = [offices[i], offices[i-1]];
+    guard(() => Store.saveConfig({ offices }));
+  } else if(t.classList.contains("c-del")){
+    const cid = t.closest(".cand").dataset.cid;
+    offices[i].candidates = offices[i].candidates.filter(c => c.id !== cid);
+    guard(() => Store.saveConfig({ offices }));
+  } else if(t.classList.contains("c-add")){
+    const nm = card.querySelector(".c-name").value.trim(); if(!nm) { card.querySelector(".c-name").focus(); return; }
+    offices[i].candidates.push({ id: uid(), name: nm, note: card.querySelector(".c-note").value.trim() });
+    guard(async () => {
+      await Store.saveConfig({ offices });
+      const again = document.querySelector(`.office[data-oid="${oid}"] .c-name`); if(again) again.focus();
+    });
+  }
+});
+$("#offices").addEventListener("keydown", e => {
+  if(e.key === "Enter" && (e.target.classList.contains("c-name") || e.target.classList.contains("c-note"))){
+    e.target.closest(".office").querySelector(".c-add").click();
+  }
+});
+$("#offices").addEventListener("change", e => {
+  if(e.target.classList.contains("o-duties")){
+    const did = e.target.closest(".office").dataset.oid;
+    const list = JSON.parse(JSON.stringify(S.config.offices));
+    const od = list.find(x => x.id === did); if(!od) return;
+    od.duties = e.target.value.split("\n").map(s => s.trim()).filter(Boolean);
+    guard(async () => { await Store.saveConfig({ offices: list }); toast("Responsibilities saved"); });
+    return;
+  }
+  if(!e.target.classList.contains("o-name")) return;
+  const oid = e.target.closest(".office").dataset.oid; const v = e.target.value.trim(); if(!v) return;
+  const offices = JSON.parse(JSON.stringify(S.config.offices));
+  const o = offices.find(x => x.id === oid); if(!o || o.name === v) return;
+  o.name = v; guard(() => Store.saveConfig({ offices }));
+});
+
+$("#addRoster").onclick = () => guard(async () => {
+  const have = new Set(S.config.roster.map(m => m.name.toLowerCase()));
+  const names = $("#fRoster").value.split(/\n|,/).map(s => s.trim()).filter(Boolean);
+  const add = []; for(const n of names){ if(!have.has(n.toLowerCase())){ have.add(n.toLowerCase()); add.push({ id: uid(), name: n }); } }
+  if(!add.length){ toast(names.length ? "Everyone listed is already on the roster" : "Type at least one name"); return; }
+  await Store.saveConfig({ roster: [...S.config.roster, ...add] });
+  $("#fRoster").value = ""; toast("Added " + add.length + (add.length === 1 ? " member" : " members"));
+});
+$("#roster").addEventListener("click", e => {
+  const t = e.target.closest(".m-del"); if(!t) return;
+  const mid = t.closest(".chip").dataset.mid;
+  guard(() => Store.saveConfig({ roster: S.config.roster.filter(m => m.id !== mid) }));
+});
+
+/* ---------- Voting controls ---------- */
+$("#tab-vote").addEventListener("click", e => {
+  const t = e.target.closest("button"); if(!t) return;
+  if(t.id === "openVoting") guard(async () => { await Store.saveConfig({ status:"open" }); toast("Voting opened"); });
+  if(t.id === "closeVoting") guard(async () => {
+    const ok = await ask({title:"Close voting?", text:"No more ballots can be cast until you reopen it.", okLabel:"Close voting"});
+    if(ok){ await Store.saveConfig({ status:"closed" }); toast("Voting closed"); }
+  });
+  if(t.id === "openKiosk") openKiosk();
+});
+$("#resetVotes").onclick = () => guard(async () => {
+  const ok = await ask({title:"Clear all votes?", text:"Every ballot and check-in is deleted. This can’t be undone.", okLabel:"Clear votes"});
+  if(!ok) return;
+  await Store.clearVotes(); toast("All votes cleared");
+});
+
+$("#copyResults").onclick = async () => {
+  const t = tally(), c = S.config;
+  const lines = [(c.title || "Kappa League Officer Election") + " — Denton-Lewisville Kappa League", S.ballots.length + " ballots cast", ""];
+  c.offices.forEach(o => {
+    lines.push(o.name);
+    t[o.id].rows.forEach(r => lines.push("  " + r.name + ": " + r.n));
+    if(t[o.id].abstain) lines.push("  No vote: " + t[o.id].abstain);
+    lines.push("");
+  });
+  try{ await navigator.clipboard.writeText(lines.join("\n")); toast("Results copied"); }
+  catch(_){ toast("Copying isn’t allowed here. Select the results and copy them instead."); }
+};
+
+/* ---------- Results report ---------- */
+
+function buildDocx(m, JSZip){
+  const X = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const R = (t, o = {}) => `<w:r><w:rPr>${o.b ? "<w:b/>" : ""}${o.i ? "<w:i/>" : ""}${o.color ? `<w:color w:val="${o.color}"/>` : ""}${o.sz ? `<w:sz w:val="${o.sz}"/><w:szCs w:val="${o.sz}"/>` : ""}</w:rPr><w:t xml:space="preserve">${X(t)}</w:t></w:r>`;
+  const P = (runs, o = {}) => `<w:p><w:pPr>${o.keep ? "<w:keepNext/>" : ""}${o.border ? '<w:pBdr><w:bottom w:val="single" w:sz="12" w:space="6" w:color="9E1B32"/></w:pBdr>' : ""}<w:spacing w:before="${o.before || 0}" w:after="${o.after ?? 120}"/>${o.align ? `<w:jc w:val="${o.align}"/>` : ""}</w:pPr>${runs}</w:p>`;
+  const H = t => P(R(t, {b:true, sz:28, color:"6E0F22"}), {before:320, after:120, keep:true});
+  const cell = (v, w, o = {}) => `<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${o.fill ? `<w:shd w:val="clear" w:color="auto" w:fill="${o.fill}"/>` : ""}</w:tcPr><w:p><w:pPr><w:spacing w:before="50" w:after="50"/>${o.align ? `<w:jc w:val="${o.align}"/>` : ""}</w:pPr>${R(v, o)}</w:p></w:tc>`;
+  const bd = s => `<w:${s} w:val="single" w:sz="4" w:space="0" w:color="D9CFD1"/>`;
+  const T = (head, rows, widths, aligns = []) => {
+    const total = widths.reduce((a, b) => a + b, 0);
+    return `<w:tbl><w:tblPr><w:tblW w:w="${total}" w:type="dxa"/><w:tblBorders>${["top","left","bottom","right","insideH","insideV"].map(bd).join("")}</w:tblBorders><w:tblLayout w:type="fixed"/><w:tblCellMar><w:left w:w="110" w:type="dxa"/><w:right w:w="110" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>${widths.map(w => `<w:gridCol w:w="${w}"/>`).join("")}</w:tblGrid>`
+      + (head ? `<w:tr><w:trPr><w:cantSplit/><w:tblHeader/></w:trPr>${head.map((h, i) => cell(h, widths[i], {b:true, color:"FFFFFF", fill:"6E0F22", align:aligns[i]})).join("")}</w:tr>` : "")
+      + rows.map(r => `<w:tr><w:trPr><w:cantSplit/></w:trPr>${r.map((v, i) => cell(v && v.t !== undefined ? v.t : v, widths[i], {b: v && v.b, align: aligns[i]})).join("")}</w:tr>`).join("")
+      + `</w:tbl>` + P("", {after:60});
+  };
+  let b = "";
+  b += P(R(m.chapter, {b:true, color:"9E1B32", sz:24}), {after:40});
+  b += P(R("Election Results Report", {b:true, sz:44}), {after:40});
+  b += P(R(m.title, {sz:26, color:"5A4E51"}), {border:true, after:240});
+  if(m.preliminary) b += P(R(m.preliminary, {b:true, color:"B4541A"}), {after:200});
+  b += H("Election details");
+  b += T(null, m.details.map(([k, v]) => [{t:k, b:true}, v]), [3200, 6160]);
+  b += H(m.closed ? "Officers elected" : "Current leaders");
+  b += T(["Office", m.closed ? "Elected" : "Leading"], m.offices.map(o => [o.name, o.elected]), [4200, 5160]);
+  b += H("Results by office");
+  m.offices.forEach(o => {
+    b += P(R(o.name, {b:true, sz:24}), {before:200, after:80, keep:true});
+    if(o.rows.length) b += T(["Candidate","Votes","Percent","Result"], o.rows.map(r => [r.name, r.n, r.pct, r.result]), [4560, 1300, 1300, 2200], [null, "right", "right", null]);
+    const extra = [o.abstain ? `No vote: ${o.abstain}` : "", o.other ? `Votes for a removed candidate: ${o.other}` : ""].filter(Boolean).join("     ");
+    if(extra) b += P(R(extra, {color:"5A4E51"}), {after:60, keep:true});
+    b += P(R(o.outcome, {i:true}), {after:160});
+  });
+  if(m.notes){ b += H("Notes"); m.notes.split("\n").forEach(l => b += P(R(l))); }
+  b += H("Certification");
+  b += P(R(m.certify));
+  m.signers.forEach(s => {
+    b += P(R(s, {b:true}), {before:400, after:60, keep:true});
+    b += P(R("Signature ________________________________________     Date ____________________"));
+  });
+  b += P(R(m.footnote, {sz:18, color:"6B5E61"}), {before:480});
+  const ns = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"';
+  const head = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  const zip = new JSZip();
+  zip.file("[Content_Types].xml", head + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>');
+  zip.file("_rels/.rels", head + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
+  zip.file("word/_rels/document.xml.rels", head + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>');
+  zip.file("word/styles.xml", head + `<w:styles ${ns}><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="Calibri" w:cs="Calibri"/><w:sz w:val="22"/><w:szCs w:val="22"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="120" w:line="264" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults></w:styles>`);
+  zip.file("word/document.xml", head + `<w:document ${ns}><w:body>${b}<w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="1260" w:right="1440" w:bottom="1260" w:left="1440" w:header="720" w:footer="720" w:gutter="0"/></w:sectPr></w:body></w:document>`);
+  return zip.generateAsync({type:"blob", mimeType:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
+}
+
+function buildPdf(m, jsPDF){
+  const doc = new jsPDF({unit:"pt", format:"letter"});
+  const W = 612, H = 792, M = 54, CW = W - 2 * M, BOT = H - 60; let y = M;
+  const INK = [30,20,22], MUTED = [90,78,81], CRIM = [110,15,34];
+  const clean = s => String(s ?? "").replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"').replace(/[\u2013\u2014]/g, "-").replace(/\u2026/g, "...").replace(/\u00B7/g, "|");
+  const font = (st, sz, col = INK) => { doc.setFont("helvetica", st); doc.setFontSize(sz); doc.setTextColor(col[0], col[1], col[2]); };
+  const need = h => { if(y + h > BOT){ doc.addPage(); y = M; } };
+  const text = (t, st, sz, col, gap = 4) => {
+    font(st, sz, col); const lh = sz * 1.3;
+    doc.splitTextToSize(clean(t), CW).forEach(l => { need(lh); doc.text(l, M, y + sz); y += lh; });
+    y += gap;
+  };
+  const heading = t => { need(70); y += 14; text(t, "bold", 14, CRIM, 6); };
+  const table = (head, rows, fr, aligns = []) => {
+    const ws = fr.map(f => f * CW), pad = 6, sz = 10, lh = 13;
+    const val = c => clean(c && c.t !== undefined ? c.t : c);
+    const lines = (cells, i) => doc.splitTextToSize(val(cells[i]), ws[i] - 2 * pad);
+    const draw = (cells, isHead) => {
+      font(isHead ? "bold" : "normal", sz);
+      const h = Math.max(...cells.map((c, i) => lines(cells, i).length)) * lh + 2 * pad - 2;
+      if(y + h > BOT){ doc.addPage(); y = M; if(!isHead && head) draw(head, true); }
+      let x = M;
+      cells.forEach((c, i) => {
+        if(isHead){ doc.setFillColor(CRIM[0], CRIM[1], CRIM[2]); doc.rect(x, y, ws[i], h, "F"); }
+        doc.setDrawColor(217, 207, 209); doc.setLineWidth(0.6); doc.rect(x, y, ws[i], h, "S");
+        font(isHead || (c && c.b) ? "bold" : "normal", sz, isHead ? [255,255,255] : INK);
+        lines(cells, i).forEach((l, k) => {
+          const ty = y + pad + sz - 1 + k * lh;
+          if(aligns[i] === "right") doc.text(l, x + ws[i] - pad, ty, {align:"right"}); else doc.text(l, x + pad, ty);
+        });
+        x += ws[i];
+      });
+      y += h;
+    };
+    if(head) draw(head, true);
+    rows.forEach(r => draw(r, false));
+    y += 10;
+  };
+  text(m.chapter, "bold", 11, [158,27,50], 2);
+  text("Election Results Report", "bold", 24, INK, 2);
+  text(m.title, "normal", 13, MUTED, 4);
+  doc.setDrawColor(158,27,50); doc.setLineWidth(2); doc.line(M, y, M + CW, y); y += 16;
+  if(m.preliminary) text(m.preliminary, "bold", 10.5, [180,84,26], 8);
+  heading("Election details");
+  table(null, m.details.map(([k, v]) => [{t:k, b:true}, v]), [0.34, 0.66]);
+  heading(m.closed ? "Officers elected" : "Current leaders");
+  table(["Office", m.closed ? "Elected" : "Leading"], m.offices.map(o => [o.name, o.elected]), [0.45, 0.55]);
+  heading("Results by office");
+  m.offices.forEach(o => {
+    need(80); y += 4;
+    text(o.name, "bold", 12, INK, 4);
+    if(o.rows.length) table(["Candidate","Votes","Percent","Result"], o.rows.map(r => [r.name, r.n, r.pct, r.result]), [0.49, 0.14, 0.14, 0.23], [null, "right", "right", null]);
+    const extra = [o.abstain ? `No vote: ${o.abstain}` : "", o.other ? `Votes for a removed candidate: ${o.other}` : ""].filter(Boolean).join("     ");
+    if(extra) text(extra, "normal", 10, MUTED, 2);
+    text(o.outcome, "italic", 10.5, INK, 10);
+  });
+  if(m.notes){ heading("Notes"); text(m.notes, "normal", 10.5, INK, 6); }
+  heading("Certification");
+  text(m.certify, "normal", 10.5, INK, 10);
+  m.signers.forEach(s => {
+    need(70); y += 26;
+    doc.setDrawColor(30,20,22); doc.setLineWidth(0.8);
+    doc.line(M, y, M + 300, y); doc.line(M + 340, y, M + CW, y);
+    font("bold", 10); doc.text(clean(s), M, y + 13);
+    font("normal", 10, MUTED); doc.text("Date", M + 340, y + 13);
+    y += 26;
+  });
+  y += 14; text(m.footnote, "normal", 9, MUTED, 0);
+  const n = doc.getNumberOfPages();
+  for(let i = 1; i <= n; i++){
+    doc.setPage(i); font("normal", 8.5, MUTED);
+    doc.text(clean(`${m.chapter} | ${m.title}`), M, H - 30);
+    doc.text(`Page ${i} of ${n}`, W - M, H - 30, {align:"right"});
+  }
+  return doc.output("blob");
+}
+
+const JSZIP_URL = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
+const JSPDF_URL = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+const scripts = {};
+function loadScript(src){
+  if(!scripts[src]) scripts[src] = new Promise((res, rej) => {
+    const el = document.createElement("script"); el.src = src; el.onload = res;
+    el.onerror = () => { delete scripts[src]; el.remove(); rej(Object.assign(new Error("load"), {code:"load_failed"})); };
+    document.head.appendChild(el);
+  });
+  return scripts[src];
+}
+function isoToday(){ const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
+function longDate(iso){
+  if(!iso) return "Not recorded";
+  const [y, mo, d] = iso.split("-").map(Number);
+  return new Date(y, mo - 1, d).toLocaleDateString("en-US", {year:"numeric", month:"long", day:"numeric"});
+}
+function joinNames(a){ return a.length < 3 ? a.join(" and ") : a.slice(0, -1).join(", ") + ", and " + a[a.length - 1]; }
+
+function reportModel(){
+  const t = tally(), c = S.config, closed = c.status === "closed";
+  const voted = Object.keys(S.checkins).length, roster = c.roster.length;
+  const details = [
+    ["Election date", longDate($("#rDate").value)],
+    ["Report created", new Date().toLocaleString("en-US", {dateStyle:"long", timeStyle:"short"})],
+    ["Voting status", closed ? "Closed (final results)" : c.status === "open" ? "Open (preliminary results)" : "Not started"],
+    ["Ballots cast", String(S.ballots.length)]
+  ];
+  if(roster) details.push(["Turnout", `${voted} of ${roster} members (${Math.round(voted / roster * 100)}%)`]);
+  details.push(["Offices on the ballot", String(c.offices.length)]);
+  if($("#rBy").value.trim()) details.push(["Prepared by", $("#rBy").value.trim()]);
+  const offices = c.offices.map(o => {
+    const r = t[o.id], tie = r.leaders.length > 1, lead = r.leaders[0];
+    const rows = r.rows.map(x => {
+      const isLead = r.leaders.some(l => l.id === x.id);
+      return { name: x.name + (x.note ? ` (${x.note})` : ""), n: String(x.n),
+        pct: r.total ? Math.round(x.n / r.total * 100) + "%" : "0%",
+        result: isLead ? (tie ? "Tied" : closed ? "Elected" : "Leading") : "" };
+    });
+    let outcome, elected;
+    if(!r.rows.length){ outcome = "No candidates were on the ballot for this office."; elected = "No candidates"; }
+    else if(!r.total){ outcome = "No votes were cast for a candidate in this office."; elected = "No votes cast"; }
+    else if(tie){ const n = joinNames(r.leaders.map(l => l.name)); outcome = `Tie between ${n} with ${lead.n} votes each. A runoff is needed.`; elected = "Tie: runoff needed"; }
+    else { outcome = `${closed ? "Elected" : "Leading"}: ${lead.name}, with ${lead.n} of ${r.total} votes.`; elected = lead.name; }
+    return { name: o.name, rows, abstain: r.abstain, other: r.other, outcome, elected };
+  });
+  return {
+    chapter: "Denton-Lewisville Kappa League",
+    title: c.title || "Kappa League Officer Election",
+    closed,
+    preliminary: closed ? "" : "Preliminary: voting was not closed when this report was created, so these results may change.",
+    details, offices,
+    notes: $("#rNotes").value.trim(),
+    certify: "We certify that the results in this report are a true and accurate record of the votes cast in this Kappa League election.",
+    signers: ["Parliamentarian", "Chapter Advisor"],
+    footnote: "Ballots were cast anonymously. Member check-ins were recorded separately from ballots, so no vote can be traced to a member. Percentages exclude members who chose no vote for an office."
+  };
+}
+
+function renderReport(){
+  if($("#report").hidden) return;
+  const m = reportModel();
+  const tbl = (head, rows, right = []) => `<table>${head ? `<tr>${head.map((h, i) => `<th class="${right.includes(i) ? "r" : ""}">${esc(h)}</th>`).join("")}</tr>` : ""}${rows.map(r => `<tr>${r.map((v, i) => `<td class="${right.includes(i) ? "r" : ""}">${v}</td>`).join("")}</tr>`).join("")}</table>`;
+  $("#rPreview").innerHTML = `
+    <p class="p-ch">${esc(m.chapter)}</p><p class="p-h">Election Results Report</p><p class="p-t">${esc(m.title)}</p>
+    ${m.preliminary ? `<p class="warn">${esc(m.preliminary)}</p>` : ""}
+    <h4>Election details</h4>${tbl(null, m.details.map(([k, v]) => [`<b>${esc(k)}</b>`, esc(v)]))}
+    <h4>${m.closed ? "Officers elected" : "Current leaders"}</h4>
+    ${m.offices.length ? tbl(["Office", m.closed ? "Elected" : "Leading"], m.offices.map(o => [esc(o.name), esc(o.elected)])) : '<p class="muted">No offices yet.</p>'}
+    <h4>Results by office</h4>
+    ${m.offices.map(o => `<h5>${esc(o.name)}</h5>
+      ${o.rows.length ? tbl(["Candidate","Votes","Percent","Result"], o.rows.map(r => [esc(r.name), r.n, r.pct, esc(r.result)]), [1, 2]) : ""}
+      ${o.abstain ? `<p class="muted">No vote: ${o.abstain}</p>` : ""}${o.other ? `<p class="muted">Votes for a removed candidate: ${o.other}</p>` : ""}
+      <p><i>${esc(o.outcome)}</i></p>`).join("")}
+    ${m.notes ? `<h4>Notes</h4>${m.notes.split("\n").map(l => `<p>${esc(l)}</p>`).join("")}` : ""}
+    <h4>Certification</h4><p>${esc(m.certify)}</p>
+    ${m.signers.map(s => `<div class="sig"><span>${esc(s)}</span><span>Date</span></div>`).join("")}
+    <p class="muted" style="margin-top:22px;font-size:.8rem">${esc(m.footnote)}</p>`;
+}
+
+$("#openReport").onclick = () => {
+  const r = $("#report"); r.hidden = !r.hidden;
+  if(!r.hidden){
+    if(!$("#rDate").value){
+      const first = S.ballots.map(b => b.at).filter(Boolean).sort()[0];
+      $("#rDate").value = first ? first.slice(0, 10) : isoToday();
+    }
+    renderReport(); r.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
+  }
+};
+["rDate","rBy","rNotes"].forEach(id => $("#" + id).addEventListener("input", renderReport));
+
+async function saveFile(dl, filename, data){
+  if(dl){ await dl.save({ filename, data }); return; }
+  const url = URL.createObjectURL(data instanceof Blob ? data : new Blob([data]));
+  const a = document.createElement("a"); a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+$("#report").addEventListener("click", async e => {
+  const btn = e.target.closest("button[data-fmt]"); if(!btn) return;
+  const fmt = btn.dataset.fmt, label = btn.textContent, hint = $("#rHint");
+  hint.hidden = true;
+  let dl = null;
+  try{ dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null; }catch(_){ dl = null; }
+  document.querySelectorAll("#report button[data-fmt]").forEach(b => b.disabled = true);
+  btn.textContent = "Preparing…";
+  try{
+    const m = reportModel();
+    const base = "kappa-league-election-results-" + ($("#rDate").value || isoToday());
+    let data, filename;
+    if(fmt === "pdf"){ await loadScript(JSPDF_URL); data = buildPdf(m, window.jspdf.jsPDF); filename = base + ".pdf"; }
+    else { await loadScript(JSZIP_URL); data = await buildDocx(m, window.JSZip); filename = base + ".docx"; }
+    await saveFile(dl, filename, data);
+    if(fmt === "gdoc"){
+      hint.textContent = "Saved as a Word file. To make it a Google Doc, open Google Drive, choose New, then File upload, and pick the file. Open it and choose Open with Google Docs; Drive converts it automatically.";
+      hint.hidden = false;
+    } else toast("Report downloaded");
+  }catch(err){
+    const c = err && err.code;
+    if(c === "declined") {}
+    else if(c === "rate_limited") toast("A download prompt is already open.");
+    else if(c === "load_failed") toast("The report tools didn’t load. Check your connection and try again.");
+    else if(c === "unavailable" || c === "not_granted" || c === "extension_not_enabled"){ hint.textContent = "Downloads aren’t available in this view."; hint.hidden = false; }
+    else toast("The report couldn’t be created. Try again.");
+  }finally{
+    btn.textContent = label;
+    document.querySelectorAll("#report button[data-fmt]").forEach(b => b.disabled = false);
+  }
+});
+
+/* ---------- Advisor access ---------- */
+let admin = false, userP = null, fails = 0, lockedUntil = 0;
+function getUser(){
+  if(!userP) userP = (window.claude && window.claude.use) ? window.claude.use("user").catch(() => null) : Promise.resolve(null);
+  return userP;
+}
+async function canManagePin(){
+  if(!Store.db) return true;
+  const u = await getUser(); if(!u) return true;
+  try{ return await u.canEdit(); }catch(_){ return false; }
+}
+async function hashPin(salt, pin){
+  const data = new TextEncoder().encode(salt + ":" + pin);
+  const buf = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+async function verifyPin(v){
+  const c = S.config; v = (v || "").trim();
+  if(c.pinHash) return (await hashPin(c.pinSalt || "", v)) === c.pinHash;
+  if(c.pin){
+    if(v !== c.pin) return false;
+    const salt = uid() + uid();
+    guard(async () => Store.saveConfig({ pinSalt: salt, pinHash: await hashPin(salt, v), pin: "" }));
+    return true;
+  }
+  return false;
+}
+async function createPin(title, text){
+  const a = await ask({ title, text, okLabel:"Next", input:true }); if(a === null) return false;
+  if(!/^\d{4,8}$/.test(a.trim())){ toast("Use 4 to 8 digits for the PIN."); return false; }
+  const b = await ask({ title:"Confirm the PIN", text:"Enter the same PIN again.", okLabel:"Save PIN", input:true }); if(b === null) return false;
+  if(a.trim() !== b.trim()){ toast("The PINs didn’t match. Try again."); return false; }
+  const salt = uid() + uid(); let ok = false;
+  await guard(async () => { await Store.saveConfig({ pinSalt: salt, pinHash: await hashPin(salt, a.trim()), pin: "" }); ok = true; });
+  if(ok) toast("Advisor PIN saved");
+  return ok;
+}
+function unlockAdmin(){ admin = true; fails = 0; closeKiosk(); render(); window.scrollTo(0, 0); }
+async function advisorSignIn(){
+  if(!S.ready) return;
+  const c = S.config;
+  if(!(c.pinHash || c.pin)){
+    if(!(await canManagePin())){
+      await ask({ title:"Advisor access isn’t set up yet", text:"The person who created this page needs to sign in first and create the advisor PIN.", okLabel:"OK" });
+      return;
+    }
+    if(await createPin("Create the advisor PIN", "This is the first advisor sign-in. Choose a PIN of 4 to 8 digits. Advisors use it to open nominations, voting controls, and results.")) unlockAdmin();
+    return;
+  }
+  if(Date.now() < lockedUntil){ toast("Too many tries. Wait a minute, then try again."); return; }
+  const manager = await canManagePin();
+  const v = await ask({ title:"Advisor sign in", text:"Enter the advisor PIN.", okLabel:"Sign in", input:true, alt: manager ? "Reset PIN" : "" });
+  if(v === null) return;
+  if(v === "__alt"){
+    if(await createPin("Reset the advisor PIN", "Choose a new PIN of 4 to 8 digits. The old PIN stops working.")) unlockAdmin();
+    return;
+  }
+  if(await verifyPin(v)){ unlockAdmin(); return; }
+  fails++;
+  if(fails >= 5){ fails = 0; lockedUntil = Date.now() + 60000; toast("Too many tries. Wait a minute, then try again."); }
+  else toast("That PIN doesn’t match.");
+}
+$("#lockBtn").onclick = () => openKiosk();
+$("#changePin").onclick = async () => { if(admin) await createPin("Change the advisor PIN", "Choose a new PIN of 4 to 8 digits. The old PIN stops working."); };
+
+/* ---------- Constitution & Bylaws viewer ---------- */
+function showDoc(w){
+  document.querySelectorAll("#docview [data-doc]").forEach(b => b.setAttribute("aria-pressed", b.dataset.doc === w));
+  ["constitution","bylaws","instructions"].forEach(n => $("#dv-" + n).hidden = n !== w);
+  $("#docview").scrollTop = 0;
+}
+function openDocs(w){ $("#docview").hidden = false; showDoc(w || "constitution"); $("#dvClose").focus(); }
+function closeDocs(){ $("#docview").hidden = true; }
+document.addEventListener("click", e => {
+  const opener = e.target.closest("[data-open-docs]"); if(opener){ openDocs(opener.dataset.openDocs); return; }
+  const seg = e.target.closest("#docview [data-doc]"); if(seg) showDoc(seg.dataset.doc);
+});
+$("#dvClose").onclick = closeDocs;
+document.addEventListener("keydown", e => { if(e.key === "Escape" && !$("#docview").hidden) closeDocs(); });
+
+openKiosk();
+Store.init();
+})();
+</script>
+</body>
+</html>
