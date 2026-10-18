@@ -343,6 +343,11 @@ select.k-search{appearance:auto}
   <!-- ADVISOR -->
   <div id="tab-advisor" hidden>
     <section class="block">
+      <h2>Open and close voting</h2>
+      <p class="lede" id="advLede"></p>
+      <div class="row" id="advActions"></div>
+    </section>
+    <section class="block">
       <h2>Advisor account</h2>
       <p class="lede" id="whoami">Signed in.</p>
       <div class="row"><button class="btn" id="signOutBtn">Sign out</button></div>
@@ -782,7 +787,7 @@ function render(){
   if(document.activeElement !== $("#fTitle")) $("#fTitle").value = c.title || "";
   if(!render._kInit){ render._kInit = true; kioskReset(); }
   if(!$("#docview").hidden && !$("#dv-candidates").hidden) renderCandidates();
-  renderOffices(); renderPicker(); renderNoms(); renderRoster(); renderVote(); renderResults(); renderReport();
+  renderOffices(); renderPicker(); renderNoms(); renderRoster(); renderVote(); renderAdvStage(); renderResults(); renderReport();
   if(!$("#kiosk").hidden) renderKiosk(false);
 }
 
@@ -856,6 +861,41 @@ function renderVote(){
     ? "Only members on the roster can vote, once each, using the code on their printed slip."
     : "Anyone with the page link can vote, once per phone or computer. Someone could vote again from a different device or a private browser window. For a stricter election, turn on voting codes.";
 }
+
+function renderAdvStage(){
+  const c = S.config, ready = ballotReady(), a = $("#advActions");
+  const stage = { setup: "Setting up", nominating: "Nominations open", open: "Voting open", closed: "Voting closed" }[c.status] || "Setting up";
+  let lede, btns;
+  if(c.status === "open"){
+    lede = "Voting is open. It stays open until you close it here or on the Voting tab.";
+    btns = '<button class="btn primary big" data-act="close">Close voting</button>';
+  } else if(c.status === "closed"){
+    lede = "Voting is closed. Results are final unless you reopen voting.";
+    btns = '<button class="btn primary big" data-act="open">Reopen voting</button>';
+  } else if(c.status === "nominating"){
+    lede = "Nominations are open. Opening voting closes nominations. Voting then stays open until you close it.";
+    btns = `<button class="btn primary big" data-act="open" ${ready ? "" : "disabled"}>Open voting</button><button class="btn" data-act="setup">Close nominations</button>`;
+  } else {
+    lede = ready ? "Voting stays open until you close it." : "Add an office with at least one candidate on the Nomination tab before opening voting.";
+    btns = `<button class="btn primary big" data-act="open" ${ready ? "" : "disabled"}>Open voting</button><button class="btn" data-act="nominating" ${c.offices.length ? "" : "disabled"}>Open nominations</button>`;
+  }
+  $("#advLede").textContent = "Current stage: " + stage + ". " + lede;
+  a.innerHTML = btns;
+}
+$("#advActions").addEventListener("click", e => {
+  const t = e.target.closest("button[data-act]"); if(!t) return;
+  const act = t.dataset.act;
+  guard(async () => {
+    if(act === "close"){
+      const ok = await ask({ title: "Close voting?", text: "No more ballots can be cast until you reopen it.", okLabel: "Close voting" });
+      if(!ok) return;
+      await Store.saveConfig({ status: "closed" }); toast("Voting closed"); return;
+    }
+    if(act === "open"){ await Store.saveConfig({ status: "open" }); toast("Voting opened. It stays open until you close it."); return; }
+    if(act === "nominating"){ await Store.saveConfig({ status: "nominating" }); toast("Nominations opened. Share the page link."); return; }
+    if(act === "setup"){ await Store.saveConfig({ status: "setup" }); toast("Nominations closed"); }
+  });
+});
 
 function renderNoms(){
   const wrap = $("#noms"), list = S.noms || [];
