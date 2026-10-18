@@ -188,6 +188,8 @@ textarea{min-height:110px;resize:vertical}
 .docs-btn{background:rgba(255,246,230,.12);border:1px solid rgba(255,246,230,.35);color:var(--on-crimson);border-radius:8px;padding:6px 12px;font-weight:600;cursor:pointer;font-size:.9rem;white-space:nowrap}
 .docs-btn:hover{background:rgba(255,246,230,.22)}
 .k-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.k-foot{margin:48px 0 0;text-align:center;font-size:.85rem;opacity:.75}
+.k-link{background:none;border:0;color:var(--on-crimson);text-decoration:underline;cursor:pointer;font-size:inherit;padding:4px}
 .docview{position:fixed;inset:0;z-index:70;background:var(--bg);color:var(--ink);overflow-y:auto;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}
 .docview[hidden]{display:none}
 .dv-bar{position:sticky;top:0;background:var(--crimson-deep);color:var(--on-crimson);padding:calc(env(safe-area-inset-top,0px) + 14px) 20px 14px;z-index:1}
@@ -348,7 +350,7 @@ select.k-search{appearance:auto}
       <ol class="steps">
         <li>In Supabase, open Authentication, then Users, and add a user with the advisor’s email and a password. Turn on auto-confirm.</li>
         <li>In the SQL editor, run: <code>insert into kl_advisors (email) values ('advisor@example.com');</code> with their email.</li>
-        <li>Share the page link. They sign in with “Advisor sign in” on the ballot screen.</li>
+        <li>Share the page link. They sign in with “Advisors: sign in here” at the bottom of the members’ screen.</li>
       </ol>
     </section>
   </div>
@@ -388,9 +390,10 @@ select.k-search{appearance:auto}
   <div class="k-inner">
     <div class="k-top">
       <span id="kTitle">Kappa League Election</span>
-      <span class="k-actions"><button class="k-exit" data-open-docs>Constitution &amp; Bylaws</button><button class="k-exit" data-open-docs="instructions">Instructions</button><button class="k-exit" id="kExit">Advisor sign in</button></span>
+      <span class="k-actions"><button class="k-exit" data-open-docs>Constitution &amp; Bylaws</button><button class="k-exit" data-open-docs="instructions">Instructions</button></span>
     </div>
     <div id="kBody"></div>
+    <p class="k-foot">No sign-in needed to nominate or vote. <button class="k-link" id="kExit">Advisors: sign in here</button></p>
   </div>
 </div>
 
@@ -495,7 +498,7 @@ select.k-search{appearance:auto}
       <div class="guide-step"><span class="guide-num">1</span><div>
         <h3>Sign in as the advisor</h3>
         <ul>
-          <li>The page opens on the members’ ballot. Tap “Advisor sign in” at the top.</li>
+          <li>The page opens on the members’ screen. Tap “Advisors: sign in here” at the bottom.</li>
           <li>Sign in with your advisor email and password. Accounts are added in Supabase (see the Advisor tab).</li>
           <li>When you’re signed in, you see the advisor tabs. Signing out returns the page to the ballot.</li>
         </ul>
@@ -533,7 +536,7 @@ select.k-search{appearance:auto}
       <div class="guide-step"><span class="guide-num">5</span><div>
         <h3>Close voting and check results</h3>
         <ul>
-          <li>When everyone has voted, tap “Advisor sign in” and sign back in.</li>
+          <li>When everyone has voted, tap “Advisors: sign in here” and sign back in.</li>
           <li>Go to Voting and tap “Close voting.”</li>
           <li>Go to Results to see the winner of each office. Ties are flagged for a runoff.</li>
         </ul>
@@ -915,7 +918,7 @@ function renderKiosk(focus){
     if(c.require_codes && (K.step === "ballot" || K.step === "review")){ K.step = "who"; K.picks = {}; }
   }
   if(c.status === "setup" && K.step !== "done"){
-    body.innerHTML = '<h2 class="k-h">Voting hasn’t opened yet</h2><p class="k-p">Your advisor will open nominations and then the ballot. Check back then.</p>';
+    body.innerHTML = '<h2 class="k-h">Not open yet</h2><p class="k-p">Nominations and voting haven’t started. When your advisor opens them, this page shows the nomination form, then the ballot. Check back then.</p>';
     return;
   }
   if(c.status !== "open" && K.step !== "done"){
